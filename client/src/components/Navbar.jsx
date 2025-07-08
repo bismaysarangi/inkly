@@ -11,7 +11,7 @@ const Navbar = () => {
       </Link>
       <div
         className={
-          "absolute w-full left-0 top-full mt-0.5 border-b border-b-gray-700 py-4 px-[5vw] md:border-0 md:block md:relative md:inset-0 md:p-0 md:w-auto " +
+          "absolute w-full left-0 top-full mt-0.5 border-b border-b-gray-700 py-4 px-[5vw] md:border-0 md:block md:relative md:inset-0 md:p-0 md:w-auto md:show " +
           (searchBoxVisibilty ? "show" : "hide")
         }
       >

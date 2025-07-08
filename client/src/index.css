@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -6,7 +6,7 @@
 
 @layer base {
   html {
-    font-family: 'Montserrat', sans-serif;
+    font-family: "Montserrat", sans-serif;
     background-color: #ead6ff;
     color: black;
   }
@@ -17,11 +17,11 @@
     @apply z-10 sticky top-0 flex items-center gap-12 w-full px-[5vw] py-5 h-[80px] border-b border-b-gray-600;
   }
 
-  .hide{
-        @apply opacity-0 pointer-events-none duration-100;
-    }
+  .hide {
+    @apply opacity-0 pointer-events-none duration-100 md:opacity-100 md:pointer-events-auto;
+  }
 
-    .show{
-        @apply opacity-100 pointer-events-auto;
-    }
+  .show {
+    @apply opacity-100 pointer-events-auto;
+  }
 }
