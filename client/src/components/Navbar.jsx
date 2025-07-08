@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import { FilePen } from "lucide-react";
 
 const Navbar = () => {
   const [searchBoxVisibilty, setSearchBoxVisibilty] = useState(false);
@@ -29,6 +30,24 @@ const Navbar = () => {
         >
           <i className="fi fi-rs-search text-xl"></i>
         </button>
+        <Link to="/editor" className="hidden md:flex gap-2 link">
+          <FilePen className="text-base" />
+          <p>Write</p>
+        </Link>
+
+        <Link
+          to="/signin"
+          className="whitespace-nowrap bg-black text-white rounded-full py-2 px-6 text-base capitalize"
+        >
+          <p>Sign In</p>
+        </Link>
+
+        <Link
+          to="/signup"
+          className="whitespace-nowrap bg-gray-200 text-black rounded-full py-2 px-6 text-base capitalize hidden md:block"
+        >
+          <p>Sign Up</p>
+        </Link>
       </div>
     </nav>
   );

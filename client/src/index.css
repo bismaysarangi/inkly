@@ -24,4 +24,16 @@
   .show {
     @apply opacity-100 pointer-events-auto;
   }
+
+  .link {
+    @apply text-black hover:text-black hover:bg-fuchsia-300 p-3 px-4 block opacity-75;
+  }
+
+  .btn-dark {
+    @apply whitespace-nowrap bg-black text-white rounded-full py-3 px-6 text-xl capitalize;
+  }
+
+  .btn-light {
+    @apply btn-dark bg-gray-200 text-black;
+  }
 }
