@@ -1,12 +1,14 @@
-import React from "react";
-import Home from "./pages/Home";
 import Navbar from "./components/Navbar";
+import { Routes, Route } from "react-router-dom";
 
 const App = () => {
   return (
-    <div>
-      <Navbar />
-    </div>
+    <Routes>
+      <Route path="/" element={<Navbar />}>
+        <Route path="/signin" element={<h1>Sign In Page</h1>} />
+        <Route path="/signup" element={<h1>Sign Up page</h1>} />
+      </Route>
+    </Routes>
   );
 };
 
