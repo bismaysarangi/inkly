@@ -1,4 +1,5 @@
 import InputBox from "../components/InputBox";
+import { User, Mail } from "lucide-react";
 
 const UserAuthForm = ({ type }) => {
   return (
@@ -9,11 +10,21 @@ const UserAuthForm = ({ type }) => {
         </h1>
 
         {type != "sign-in" ? (
-          <InputBox name="fullname" type="text" placeholder="Full Name" />
+          <InputBox
+            name="fullname"
+            type="text"
+            placeholder="Full Name"
+            icon={<User />}
+          />
         ) : (
           ""
         )}
-        <InputBox name="email" type="email" placeholder="Email" />
+        <InputBox
+          name="email"
+          type="email"
+          placeholder="Email"
+          icon={<Mail />}
+        />
       </form>
     </section>
   );
