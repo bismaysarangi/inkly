@@ -31,21 +31,24 @@ const Navbar = () => {
           >
             <i className="fi fi-rs-search text-xl"></i>
           </button>
-          <Link to="/editor" className="hidden md:flex gap-2 link">
+          <Link
+            to="/editor"
+            className="hidden md:flex gap-2 text-black hover:text-black hover:bg-fuchsia-300 p-3 px-4 block opacity-75"
+          >
             <FilePen className="text-base" />
             <p>Write</p>
           </Link>
 
           <Link
             to="/signin"
-            className="whitespace-nowrap bg-black text-white rounded-full py-2 px-6 text-base capitalize"
+            className="whitespace-nowrap bg-black text-white rounded-full py-2 px-6 text-base capitalize hover:bg-fuchsia-900 transition-colors duration-300"
           >
             <p>Sign In</p>
           </Link>
 
           <Link
             to="/signup"
-            className="whitespace-nowrap bg-gray-200 text-black rounded-full py-2 px-6 text-base capitalize hidden md:block"
+            className="whitespace-nowrap bg-gray-200 text-black rounded-full py-2 px-6 text-base capitalize hidden md:block hover:bg-fuchsia-200 transition-colors duration-300"
           >
             <p>Sign Up</p>
           </Link>

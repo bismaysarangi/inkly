@@ -32,8 +32,4 @@
   .show {
     @apply opacity-100 pointer-events-auto;
   }
-
-  .link {
-    @apply text-black hover:text-black hover:bg-fuchsia-300 p-3 px-4 block opacity-75;
-  }
 }
