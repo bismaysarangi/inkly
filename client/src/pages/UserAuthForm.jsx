@@ -1,16 +1,18 @@
 import InputBox from "../components/InputBox";
 import { User, Mail, Key } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const UserAuthForm = ({ type }) => {
+  console.log("Type prop value:", type, "Type of:", typeof type);
   return (
     <section className="h-screen flex items-center justify-center">
       <form className="w-[80%] max-w-[400px]">
         <h1 className="text-4xl font-gelasio capitalize text-center mb-24">
-          {type == "sign-in" ? "Welcome back" : "Join us today!"}
+          {type == "signin" ? "Welcome back" : "Join us today!"}
         </h1>
 
-        {type != "sign-in" ? (
+        {type != "signin" ? (
           <InputBox
             name="fullname"
             type="text"
@@ -52,6 +54,22 @@ const UserAuthForm = ({ type }) => {
           <img src="/google.png" alt="" className="w-5" />
           Continue with Google
         </Button>
+
+        {type == "signin" ? (
+          <p className="mt-6 text-center text-black text-lg">
+            Don't have an account?
+            <Link to="/signup" className="underline text-black text-xl ml-1">
+              Sign Up
+            </Link>
+          </p>
+        ) : (
+          <p className="mt-6 text-center text-black text-lg">
+            Already have an account?
+            <Link to="/signin" className="underline text-black text-xl ml-1">
+              Sign In
+            </Link>
+          </p>
+        )}
       </form>
     </section>
   );
