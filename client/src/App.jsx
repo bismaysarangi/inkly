@@ -1,15 +1,15 @@
-import Navbar from "./components/Navbar";
 import { Routes, Route } from "react-router-dom";
-import UserAuthForm from "./pages/UserAuthForm";
+import Header from "./components/Header";
+import Home from "./pages/Home";
 
 const App = () => {
   return (
-    <Routes>
-      <Route path="/" element={<Navbar />}>
-        <Route path="/signin" element={<UserAuthForm type="signin" />} />
-        <Route path="/signup" element={<UserAuthForm type="signup" />} />
-      </Route>
-    </Routes>
+    <>
+      <Header />
+      <Routes>
+        <Route path="/" element={<Home />} />
+      </Routes>
+    </>
   );
 };
 
