@@ -1,7 +1,7 @@
 import React from "react";
 
-const UserAuthForm = () => {
-  return <div>UserAuthForm</div>;
+const Home = () => {
+  return <div>Home</div>;
 };
 
-export default UserAuthForm;
+export default Home;

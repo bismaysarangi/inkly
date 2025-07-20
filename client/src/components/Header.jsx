@@ -1,4 +1,4 @@
-import { Navbar, TextInput } from "flowbite-react";
+import { TextInput } from "flowbite-react";
 import { Link } from "react-router-dom";
 import { Search, Moon, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
