@@ -2,11 +2,31 @@ import { Navbar, TextInput } from "flowbite-react";
 import { Link } from "react-router-dom";
 import { Search, Moon, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const searchRef = useRef(null);
+
+  // Handle click outside to close search
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setIsSearchOpen(false);
+      }
+    };
+
+    if (isSearchOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("touchstart", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+    };
+  }, [isSearchOpen]);
 
   return (
     <nav className="border-b border-gray-200/50 bg-white/80 backdrop-blur-lg dark:bg-gray-900/90 dark:border-gray-700/50 sticky top-0 z-50 shadow-sm">
@@ -21,7 +41,7 @@ const Header = () => {
         </Link>
 
         <div className="flex gap-3 md:order-2 items-center">
-          <div className="relative">
+          <div className="relative" ref={searchRef}>
             <form>
               <TextInput
                 type="text"
@@ -29,7 +49,8 @@ const Header = () => {
                 rightIcon={Search}
                 className={`${
                   isSearchOpen ? "block" : "hidden"
-                } lg:block absolute right-0 top-0 w-64 z-10 lg:relative lg:w-auto`}
+                } lg:block fixed right-4 left-4 top-20 z-50 lg:relative lg:right-auto lg:left-auto lg:top-auto lg:w-auto shadow-lg lg:shadow-none rounded-lg lg:rounded-md`}
+                autoFocus={isSearchOpen}
               />
             </form>
             <Button
