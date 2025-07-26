@@ -35,7 +35,7 @@ const Header = () => {
           to="/"
           className="self-center whitespace-nowrap text-sm sm:text-xl font-bold dark:text-white"
         >
-          <span className="px-3 py-1.5 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-3xl text-white font-semibold tracking-wide">
+          <span className="bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-lg hover:shadow-xl hover:from-purple-600 hover:to-blue-600 transition-all duration-300 rounded-full px-6 py-2 tracking-wide">
             Inkly
           </span>
         </Link>
