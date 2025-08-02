@@ -1,12 +1,18 @@
-import { Button, Label, TextInput } from "flowbite-react";
+import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  signInStart,
+  signInSuccess,
+  signInFailure,
+} from "../redux/user/userSlice";
 
 export default function SignIn() {
   const [formData, setFormData] = useState({});
-  const [errorMessage, setErrorMessage] = useState("");
-  const [loading, setLoading] = useState(false);
+  const { loading, error: errorMessage } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -16,13 +22,11 @@ export default function SignIn() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.email || !formData.password) {
-      setErrorMessage("All fields are required.");
-      return;
+      return dispatch(signInFailure("Please fill all the fields"));
     }
 
     try {
-      setLoading(true);
-      setErrorMessage("");
+      dispatch(signInStart());
 
       const res = await fetch("/server/auth/login", {
         method: "POST",
@@ -35,27 +39,15 @@ export default function SignIn() {
       const data = await res.json();
 
       if (data.success === false) {
-        setErrorMessage(
-          data.message || "Invalid credentials. Please try again."
-        );
-        return;
+        dispatch(signInFailure(data.message));
       }
 
       if (res.ok) {
-        console.log("Sign in successful:", data);
+        dispatch(signInSuccess(data));
         navigate("/");
-      } else {
-        setErrorMessage(
-          data.message || "Invalid credentials. Please try again."
-        );
       }
     } catch (error) {
-      console.error("Error during sign in:", error);
-      setErrorMessage(
-        "Network error. Please check your connection and try again."
-      );
-    } finally {
-      setLoading(false);
+      dispatch(signInFailure(error.message));
     }
   };
 
@@ -122,7 +114,14 @@ export default function SignIn() {
                 type="submit"
                 disabled={loading}
               >
-                {loading ? "Signing In..." : "Sign In"}
+                {loading ? (
+                  <>
+                    <Spinner size="sm" />
+                    <span className="pl-3">Signing In...</span>
+                  </>
+                ) : (
+                  "Sign In"
+                )}
               </Button>
             </div>
           </div>
@@ -135,6 +134,11 @@ export default function SignIn() {
             Don't have an account? <span className="font-medium">Sign up</span>
           </Link>
         </div>
+        {errorMessage && (
+          <Alert className="mt-5" color="failure">
+            {errorMessage}
+          </Alert>
+        )}
       </div>
     </div>
   );
