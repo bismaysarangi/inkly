@@ -1,7 +1,64 @@
 import { Button, Label, TextInput } from "flowbite-react";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function SignIn() {
+  const [formData, setFormData] = useState({});
+  const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!formData.email || !formData.password) {
+      setErrorMessage("All fields are required.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setErrorMessage("");
+
+      const res = await fetch("/server/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+
+      if (data.success === false) {
+        setErrorMessage(
+          data.message || "Invalid credentials. Please try again."
+        );
+        return;
+      }
+
+      if (res.ok) {
+        console.log("Sign in successful:", data);
+        navigate("/");
+      } else {
+        setErrorMessage(
+          data.message || "Invalid credentials. Please try again."
+        );
+      }
+    } catch (error) {
+      console.error("Error during sign in:", error);
+      setErrorMessage(
+        "Network error. Please check your connection and try again."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen mt-20">
       {/* left side */}
@@ -17,7 +74,15 @@ export default function SignIn() {
       </div>
       {/* right side */}
       <div className="">
-        <form className="flex flex-col gap-4 p-3 max-w-3xl mx-auto">
+        <form
+          className="flex flex-col gap-4 p-3 max-w-3xl mx-auto"
+          onSubmit={handleSubmit}
+        >
+          {errorMessage && (
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+              {errorMessage}
+            </div>
+          )}
           <div className="space-y-4">
             <div>
               <Label
@@ -31,6 +96,7 @@ export default function SignIn() {
                 id="email"
                 placeholder="Enter your email"
                 required
+                onChange={handleChange}
                 className="w-full py-2 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
               />
             </div>
@@ -46,6 +112,7 @@ export default function SignIn() {
                 id="password"
                 placeholder="Enter your password"
                 required
+                onChange={handleChange}
                 className="w-full py-2 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
               />
             </div>
@@ -53,8 +120,9 @@ export default function SignIn() {
               <Button
                 className="mt-6 w-1/3 bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-lg hover:shadow-xl hover:from-purple-600 hover:to-blue-600 transition-all duration-300 px-6 py-3 tracking-wide rounded-lg font-semibold"
                 type="submit"
+                disabled={loading}
               >
-                Sign In
+                {loading ? "Signing In..." : "Sign In"}
               </Button>
             </div>
           </div>

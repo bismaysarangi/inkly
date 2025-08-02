@@ -37,7 +37,7 @@ export const login = async (req, res, next) => {
   const { email, password } = req.body;
 
   if (!email || !password || email === '' || password === '') {
-    next(errorHandler(400, 'All fields are required'));
+    return next(errorHandler(400, 'All fields are required'));
   }
 
   try {
@@ -45,13 +45,17 @@ export const login = async (req, res, next) => {
     if (!validUser) {
       return next(errorHandler(404, 'User not found'));
     }
+    
     const validPassword = bcryptjs.compareSync(password, validUser.password);
     if (!validPassword) {
       return next(errorHandler(400, 'Invalid password'));
     }
+
+    console.log('JWT_SECRET exists:', !!process.env.JWT_SECRET);
+    
     const token = jwt.sign(
       { id: validUser._id, isAdmin: validUser.isAdmin },
-      process.env.JWT_SECRET
+      process.env.JWT_SECRET || 'fallback-secret-key' 
     );
 
     const { password: pass, ...rest } = validUser._doc;
@@ -61,8 +65,13 @@ export const login = async (req, res, next) => {
       .cookie('access_token', token, {
         httpOnly: true,
       })
-      .json(rest);
+      .json({
+        success: true,
+        message: 'Login successful',
+        user: rest
+      });
   } catch (error) {
+    console.error('Login error:', error);
     next(error);
   }
 };
