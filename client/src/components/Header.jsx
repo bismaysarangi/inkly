@@ -53,7 +53,7 @@ const Header = () => {
 
   const handleSignout = async () => {
     try {
-      const res = await fetch("/server/user/signout", {
+      const res = await fetch("/server/auth/signout", {
         method: "POST",
       });
       const data = await res.json();
@@ -62,6 +62,7 @@ const Header = () => {
       } else {
         dispatch(signoutSuccess());
         setShowUserMenu(false);
+        navigate("/");
       }
     } catch (error) {
       console.log(error.message);
