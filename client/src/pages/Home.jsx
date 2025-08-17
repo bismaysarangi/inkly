@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import PostCard from "../components/PostCard";
 import { Button } from "flowbite-react";
-import { ArrowRight, BookOpen, Users, TrendingUp } from "lucide-react";
+import { ArrowRight, BookOpen, Users, TrendingUp, Plus } from "lucide-react";
 
 export default function Home() {
   const [posts, setPosts] = useState([]);
@@ -38,8 +38,7 @@ export default function Home() {
             </h1>
             <p className="text-xl sm:text-2xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
               Discover amazing stories, tutorials, and insights from developers
-              around the world. Join our community of writers and readers
-              sharing knowledge.
+              around the world.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Link to="/search">
@@ -52,14 +51,14 @@ export default function Home() {
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
               </Link>
-              <Link to="/signup">
+              <Link to="/create-post">
                 <Button
-                  color="gray"
+                  gradientDuoTone="pinkToOrange"
                   size="xl"
-                  outline
                   className="font-semibold"
                 >
-                  Join Community
+                  Create Post
+                  <Plus className="ml-2 w-5 h-5" />
                 </Button>
               </Link>
             </div>

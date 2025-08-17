@@ -1,12 +1,17 @@
-import { Button, Label, TextInput } from "flowbite-react";
+import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  signInStart,
+  signInSuccess,
+  signInFailure,
+} from "../redux/user/userSlice";
 
 export default function SignUp() {
   const [formData, setFormData] = useState({});
-  const [errorMessage, setErrorMessage] = useState("");
-  const [loading, setLoading] = useState(false);
+  const { loading, error: errorMessage } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -16,142 +21,171 @@ export default function SignUp() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.username || !formData.email || !formData.password) {
-      setErrorMessage("All fields are required.");
-      return;
+      return dispatch(signInFailure("Please fill all the fields"));
     }
 
     try {
-      setLoading(true);
-      setErrorMessage("");
-
+      dispatch(signInStart());
       const res = await fetch("/server/auth/signup", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
-
       const data = await res.json();
-
       if (data.success === false) {
-        setErrorMessage(
-          data.message || "Something went wrong. Please try again."
-        );
-        return;
+        dispatch(signInFailure(data.message));
       }
-      setLoading(false);
       if (res.ok) {
-        console.log("Sign up successful:", data);
-        navigate("/login");
-      } else {
-        setErrorMessage(
-          data.message || "Something went wrong. Please try again."
-        );
+        dispatch(signInSuccess(data));
+        navigate("/");
       }
     } catch (error) {
-      console.error("Error during sign up:", error);
-      setErrorMessage(
-        "Network error. Please check your connection and try again."
-      );
-      setLoading(false);
-    } finally {
-      setLoading(false);
+      dispatch(signInFailure(error.message));
     }
   };
 
   return (
-    <div className="min-h-screen mt-20">
-      {/* left side */}
-      <div className="flex items-center p-3 max-w-3xl mx-auto flex-col gap-2">
-        <Link to="/" className="text-sm sm:text-xl font-bold dark:text-white">
-          <span className="text-3xl bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-lg hover:shadow-xl hover:from-purple-600 hover:to-blue-600 transition-all duration-300 rounded-full px-6 py-2 tracking-wide inline-block">
-            Inkly
-          </span>
-        </Link>
-        <p className="mt-4 text-sm text-gray-600 dark:text-gray-400">
-          Create an account to get started with Inkly.
-        </p>
-      </div>
-      {/* right side */}
-      <div className="">
-        <form
-          className="flex flex-col gap-4 p-3 max-w-3xl mx-auto"
-          onSubmit={handleSubmit}
-        >
-          <div className="space-y-4">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100 dark:from-gray-900 dark:via-purple-900 dark:to-blue-900 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8">
+        <div className="text-center">
+          <Link to="/" className="inline-block">
+            <span className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+              Inkly
+            </span>
+          </Link>
+          <h2 className="mt-6 text-3xl font-bold text-gray-900 dark:text-white">
+            Create your account
+          </h2>
+          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+            Join our community of writers and readers
+          </p>
+        </div>
+
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 border border-gray-200 dark:border-gray-700">
+          {errorMessage && (
+            <Alert color="failure" className="mb-6 border-l-4 border-red-500">
+              <div className="font-medium text-red-800 dark:text-red-200">
+                {errorMessage}
+              </div>
+            </Alert>
+          )}
+
+          <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
               <Label
-                className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300"
-                value="Your username"
+                htmlFor="username"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
               >
                 Username
               </Label>
               <TextInput
-                type="text"
                 id="username"
-                placeholder="Enter your username"
+                name="username"
+                type="text"
                 required
-                className="w-full py-2 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                placeholder="Choose a username"
                 onChange={handleChange}
+                disabled={loading}
+                className="w-full"
               />
             </div>
+
             <div>
               <Label
-                className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300"
-                value="Your email"
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
               >
-                Email
+                Email Address
               </Label>
               <TextInput
-                type="email"
                 id="email"
-                placeholder="Enter your email"
+                name="email"
+                type="email"
+                autoComplete="email"
                 required
-                className="w-full py-2 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                placeholder="Enter your email"
                 onChange={handleChange}
+                disabled={loading}
+                className="w-full"
               />
             </div>
+
             <div>
               <Label
-                className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300"
-                value="Your password"
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
               >
                 Password
               </Label>
               <TextInput
-                type="password"
                 id="password"
-                placeholder="Create a password"
+                name="password"
+                type="password"
                 required
-                className="w-full py-2 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                placeholder="Create a password"
                 onChange={handleChange}
+                disabled={loading}
+                className="w-full"
               />
             </div>
-            <div className="flex justify-center">
-              <Button
-                className="mt-6 w-1/3 bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-lg hover:shadow-xl hover:from-purple-600 hover:to-blue-600 transition-all duration-300 px-6 py-3 tracking-wide rounded-lg font-semibold"
-                type="submit"
-                disabled={loading}
+
+            <Button
+              type="submit"
+              disabled={loading}
+              gradientDuoTone="purpleToBlue"
+              className="w-full py-3 text-lg font-semibold"
+            >
+              {loading ? (
+                <>
+                  <Spinner size="sm" className="mr-2" />
+                  Signing up...
+                </>
+              ) : (
+                "Sign Up"
+              )}
+            </Button>
+          </form>
+
+          <div className="mt-6">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300 dark:border-gray-600" />
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">
+                  Already have an account?
+                </span>
+              </div>
+            </div>
+
+            <div className="mt-6 text-center">
+              <Link
+                to="/sign-in"
+                className="font-medium text-purple-600 hover:text-purple-500 dark:text-purple-400 dark:hover:text-purple-300"
               >
-                {loading ? "Signing Up..." : "Sign Up"}
-              </Button>
+                Sign in instead
+              </Link>
             </div>
           </div>
-        </form>
-        {errorMessage && (
-          <Alert variant="destructive" className="mt-4 max-w-3xl mx-auto">
-            <AlertTitle>Error</AlertTitle>
-            <AlertDescription>{errorMessage}</AlertDescription>
-          </Alert>
-        )}
-        <div className="flex justify-center mt-4">
-          <Link
-            to="/login"
-            className="text-sm text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors duration-200"
-          >
-            Already have an account? <span className="font-medium">Log in</span>
-          </Link>
+        </div>
+
+        <div className="text-center">
+          <p className="text-xs text-gray-500 dark:text-gray-400">
+            By signing up, you agree to our{" "}
+            <a
+              href="#"
+              className="text-purple-600 hover:text-purple-500 dark:text-purple-400"
+            >
+              Terms of Service
+            </a>{" "}
+            and{" "}
+            <a
+              href="#"
+              className="text-purple-600 hover:text-purple-500 dark:text-purple-400"
+            >
+              Privacy Policy
+            </a>
+          </p>
         </div>
       </div>
     </div>
