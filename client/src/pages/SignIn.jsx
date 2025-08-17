@@ -52,93 +52,159 @@ export default function SignIn() {
   };
 
   return (
-    <div className="min-h-screen mt-20">
-      {/* left side */}
-      <div className="flex items-center p-3 max-w-3xl mx-auto flex-col gap-2">
-        <Link to="/" className="text-sm sm:text-xl font-bold dark:text-white">
-          <span className="text-3xl bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-lg hover:shadow-xl hover:from-purple-600 hover:to-blue-600 transition-all duration-300 rounded-full px-6 py-2 tracking-wide inline-block">
-            Inkly
-          </span>
-        </Link>
-        <p className="mt-4 text-sm text-gray-600 dark:text-gray-400">
-          Welcome back to Inkly. Sign in to continue.
-        </p>
-      </div>
-      {/* right side */}
-      <div className="">
-        <form
-          className="flex flex-col gap-4 p-3 max-w-3xl mx-auto"
-          onSubmit={handleSubmit}
-        >
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100 dark:from-gray-900 dark:via-purple-900 dark:to-blue-900 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8">
+        {/* Header */}
+        <div className="text-center">
+          <Link to="/" className="inline-block">
+            <span className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+              Inkly
+            </span>
+          </Link>
+          <h2 className="mt-6 text-3xl font-bold text-gray-900 dark:text-white">
+            Welcome back
+          </h2>
+          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+            Sign in to your account to continue
+          </p>
+        </div>
+
+        {/* Form */}
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 border border-gray-200 dark:border-gray-700">
           {errorMessage && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
-              {errorMessage}
-            </div>
+            <Alert color="failure" className="mb-6 border-l-4 border-red-500">
+              <div className="font-medium text-red-800 dark:text-red-200">
+                {errorMessage}
+              </div>
+            </Alert>
           )}
-          <div className="space-y-4">
+
+          <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
               <Label
-                className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300"
-                value="Your email"
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
               >
-                Email
+                Email Address
               </Label>
               <TextInput
-                type="email"
                 id="email"
-                placeholder="Enter your email"
+                name="email"
+                type="email"
+                autoComplete="email"
                 required
+                placeholder="Enter your email"
                 onChange={handleChange}
-                className="w-full py-2 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                disabled={loading}
+                className="w-full"
               />
             </div>
+
             <div>
               <Label
-                className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300"
-                value="Your password"
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
               >
                 Password
               </Label>
               <TextInput
-                type="password"
                 id="password"
-                placeholder="Enter your password"
+                name="password"
+                type="password"
+                autoComplete="current-password"
                 required
+                placeholder="Enter your password"
                 onChange={handleChange}
-                className="w-full py-2 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                disabled={loading}
+                className="w-full"
               />
             </div>
-            <div className="flex justify-center">
-              <Button
-                className="mt-6 w-1/3 bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-lg hover:shadow-xl hover:from-purple-600 hover:to-blue-600 transition-all duration-300 px-6 py-3 tracking-wide rounded-lg font-semibold"
-                type="submit"
-                disabled={loading}
+
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <input
+                  id="remember-me"
+                  name="remember-me"
+                  type="checkbox"
+                  className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
+                />
+                <label
+                  htmlFor="remember-me"
+                  className="ml-2 block text-sm text-gray-900 dark:text-gray-300"
+                >
+                  Remember me
+                </label>
+              </div>
+
+              <div className="text-sm">
+                <a
+                  href="#"
+                  className="font-medium text-purple-600 hover:text-purple-500 dark:text-purple-400 dark:hover:text-purple-300"
+                >
+                  Forgot your password?
+                </a>
+              </div>
+            </div>
+
+            <Button
+              type="submit"
+              disabled={loading}
+              gradientDuoTone="purpleToBlue"
+              className="w-full py-3 text-lg font-semibold"
+            >
+              {loading ? (
+                <>
+                  <Spinner size="sm" className="mr-2" />
+                  Signing in...
+                </>
+              ) : (
+                "Sign in"
+              )}
+            </Button>
+          </form>
+
+          <div className="mt-6">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300 dark:border-gray-600" />
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">
+                  New to Inkly?
+                </span>
+              </div>
+            </div>
+
+            <div className="mt-6 text-center">
+              <Link
+                to="/signup"
+                className="font-medium text-purple-600 hover:text-purple-500 dark:text-purple-400 dark:hover:text-purple-300"
               >
-                {loading ? (
-                  <>
-                    <Spinner size="sm" />
-                    <span className="pl-3">Signing In...</span>
-                  </>
-                ) : (
-                  "Sign In"
-                )}
-              </Button>
+                Create an account
+              </Link>
             </div>
           </div>
-        </form>
-        <div className="flex justify-center mt-4">
-          <Link
-            to="/signup"
-            className="text-sm text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors duration-200"
-          >
-            Don't have an account? <span className="font-medium">Sign up</span>
-          </Link>
         </div>
-        {errorMessage && (
-          <Alert className="mt-5" color="failure">
-            {errorMessage}
-          </Alert>
-        )}
+
+        {/* Footer */}
+        <div className="text-center">
+          <p className="text-xs text-gray-500 dark:text-gray-400">
+            By signing in, you agree to our{" "}
+            <a
+              href="#"
+              className="text-purple-600 hover:text-purple-500 dark:text-purple-400"
+            >
+              Terms of Service
+            </a>{" "}
+            and{" "}
+            <a
+              href="#"
+              className="text-purple-600 hover:text-purple-500 dark:text-purple-400"
+            >
+              Privacy Policy
+            </a>
+          </p>
+        </div>
       </div>
     </div>
   );

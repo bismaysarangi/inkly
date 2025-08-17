@@ -11,7 +11,6 @@ import { Link, useLocation } from "react-router-dom";
 import { signoutSuccess } from "../redux/user/userSlice";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { Badge } from "@/components/ui/badge";
 
 const DashSidebar = () => {
   const location = useLocation();
@@ -20,6 +19,7 @@ const DashSidebar = () => {
   const { theme } = useSelector((state) => state.theme);
   const [tab, setTab] = useState("");
 
+  // Handle different user object structures
   const user = currentUser?.user || currentUser;
 
   useEffect(() => {
@@ -27,6 +27,9 @@ const DashSidebar = () => {
     const tabFromUrl = urlParams.get("tab");
     if (tabFromUrl) {
       setTab(tabFromUrl);
+    } else {
+      // Default to profile if no tab specified
+      setTab("profile");
     }
   }, [location.search]);
 
@@ -54,7 +57,7 @@ const DashSidebar = () => {
             title: "Dashboard",
             icon: BarChart3,
             url: "/dashboard?tab=dash",
-            isActive: tab === "dash" || !tab,
+            isActive: tab === "dash",
           },
         ]
       : []),
@@ -63,7 +66,7 @@ const DashSidebar = () => {
       title: "Profile",
       icon: User,
       url: "/dashboard?tab=profile",
-      isActive: tab === "profile",
+      isActive: tab === "profile" || !tab,
       badge: user?.isAdmin ? "Admin" : "User",
     },
     // Admin only items
@@ -91,6 +94,16 @@ const DashSidebar = () => {
       : []),
   ];
 
+  if (!user) {
+    return (
+      <div className="w-full md:w-56 h-screen bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 flex items-center justify-center">
+        <div className="text-center text-gray-500 dark:text-gray-400">
+          Loading user data...
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full md:w-56 h-screen bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 flex flex-col transition-colors">
       {/* Header */}
@@ -98,6 +111,9 @@ const DashSidebar = () => {
         <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
           Dashboard
         </h2>
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          Welcome, {user.username}
+        </p>
       </div>
 
       {/* Content */}
@@ -110,25 +126,24 @@ const DashSidebar = () => {
                 <Link
                   key={item.title}
                   to={item.url}
-                  className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  className={`flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${
                     item.isActive
-                      ? "bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-700"
+                      ? "bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-lg"
                       : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white"
                   }`}
                 >
-                  <IconComponent className="h-4 w-4 shrink-0" />
+                  <IconComponent className="h-5 w-5 shrink-0" />
                   <span className="truncate">{item.title}</span>
                   {item.badge && (
-                    <Badge
-                      variant={user?.isAdmin ? "default" : "secondary"}
-                      className={`ml-auto text-xs ${
+                    <span
+                      className={`ml-auto px-2 py-1 text-xs font-medium rounded-full ${
                         user?.isAdmin
                           ? "bg-purple-100 text-purple-800 dark:bg-purple-900/50 dark:text-purple-300"
                           : "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300"
                       }`}
                     >
                       {item.badge}
-                    </Badge>
+                    </span>
                   )}
                 </Link>
               );
@@ -145,9 +160,9 @@ const DashSidebar = () => {
       <div className="border-t border-gray-200 dark:border-gray-700 p-4">
         <button
           onClick={handleSignout}
-          className="flex items-center gap-3 w-full px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-md hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-700 dark:hover:text-red-400 transition-colors"
+          className="flex items-center gap-3 w-full px-3 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-700 dark:hover:text-red-400 transition-all duration-200"
         >
-          <LogOut className="h-4 w-4 shrink-0" />
+          <LogOut className="h-5 w-5 shrink-0" />
           <span>Sign Out</span>
         </button>
       </div>
