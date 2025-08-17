@@ -1,19 +1,17 @@
-import { Button, Spinner } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import CommentSection from "../components/CommentSection";
-import PostCard from "../components/PostCard";
+import { Button, Card, Spinner } from "flowbite-react";
+import { FaHeart, FaRegHeart, FaComment, FaShare } from "react-icons/fa";
 import { useSelector } from "react-redux";
-import { Heart, Calendar, User } from "lucide-react";
+import CommentSection from "../components/CommentSection";
 
 export default function PostPage() {
   const { postSlug } = useParams();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
   const [post, setPost] = useState(null);
-  const [recentPosts, setRecentPosts] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [liked, setLiked] = useState(false);
   const [likes, setLikes] = useState(0);
-  const [isLiked, setIsLiked] = useState(false);
   const { currentUser } = useSelector((state) => state.user);
 
   useEffect(() => {
@@ -23,41 +21,26 @@ export default function PostPage() {
         const res = await fetch(`/server/post/getposts?slug=${postSlug}`);
         const data = await res.json();
         if (!res.ok) {
-          setError(true);
+          setError(data.message);
           setLoading(false);
           return;
         }
         if (res.ok) {
           setPost(data.posts[0]);
           setLikes(data.posts[0].numberOfLikes);
-          setIsLiked(
-            currentUser && data.posts[0].likes.includes(currentUser._id)
+          setLiked(
+            currentUser ? data.posts[0].likes.includes(currentUser._id) : false
           );
           setLoading(false);
-          setError(false);
+          setError(null);
         }
       } catch (error) {
-        setError(true);
+        setError(error.message);
         setLoading(false);
       }
     };
     fetchPost();
   }, [postSlug, currentUser]);
-
-  useEffect(() => {
-    try {
-      const fetchRecentPosts = async () => {
-        const res = await fetch(`/server/post/getposts?limit=3`);
-        const data = await res.json();
-        if (res.ok) {
-          setRecentPosts(data.posts);
-        }
-      };
-      fetchRecentPosts();
-    } catch (error) {
-      console.log(error.message);
-    }
-  }, []);
 
   const handleLike = async () => {
     if (!currentUser) {
@@ -66,76 +49,133 @@ export default function PostPage() {
     try {
       const res = await fetch(`/server/post/likepost/${post._id}`, {
         method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
       });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.message);
+        return;
+      }
       if (res.ok) {
-        const data = await res.json();
-        setLikes(data.numberOfLikes);
-        setIsLiked(!isLiked);
+        setLiked(!liked);
+        setLikes(liked ? likes - 1 : likes + 1);
       }
     } catch (error) {
-      console.log(error.message);
+      setError(error.message);
     }
   };
 
-  if (loading)
+  if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
+      <div className="min-h-screen flex items-center justify-center">
         <Spinner size="xl" />
       </div>
     );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+            Error
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400">{error}</p>
+          <Link
+            to="/"
+            className="text-purple-600 hover:text-purple-500 mt-4 inline-block"
+          >
+            Go back home
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <main className="p-3 flex flex-col max-w-6xl mx-auto min-h-screen">
-      <h1 className="text-3xl mt-10 p-3 text-center font-serif max-w-2xl mx-auto lg:text-4xl">
-        {post && post.title}
-      </h1>
-      <Link
-        to={`/search?category=${post && post.category}`}
-        className="self-center mt-5"
-      >
-        <Button color="gray" pill size="xs">
-          {post && post.category}
-        </Button>
-      </Link>
-      <img
-        src={post && post.image}
-        alt={post && post.title}
-        className="mt-10 p-3 max-h-[600px] w-full object-cover"
-      />
-      <div className="flex justify-between p-3 border-b border-slate-500 mx-auto w-full max-w-2xl text-xs">
-        <div className="flex items-center gap-2">
-          <Calendar size={16} />
-          <span>{post && new Date(post.createdAt).toLocaleDateString()}</span>
+    <div className="min-h-screen py-12 px-4 mx-auto max-w-4xl">
+      <article>
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+          {post.title}
+        </h1>
+
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center space-x-4">
+            <img
+              src={
+                post.userId.profilePicture ||
+                "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+              }
+              alt={post.userId.username}
+              className="w-10 h-10 rounded-full object-cover"
+            />
+            <div>
+              <p className="font-medium text-gray-900 dark:text-white">
+                {post.userId.username}
+              </p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                {new Date(post.createdAt).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </p>
+            </div>
+          </div>
+
+          <span className="px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200">
+            {post.category}
+          </span>
         </div>
-        <div className="flex items-center gap-4">
+
+        {post.image && (
+          <img
+            src={post.image}
+            alt={post.title}
+            className="w-full h-96 object-cover rounded-xl mb-8"
+          />
+        )}
+
+        <div
+          className="prose dark:prose-invert max-w-none mb-8"
+          dangerouslySetInnerHTML={{ __html: post.content }}
+        />
+
+        <div className="flex items-center space-x-6 mb-12">
           <button
             onClick={handleLike}
-            className={`flex items-center gap-1 hover:text-red-500 transition-colors ${
-              isLiked ? "text-red-500" : "text-gray-500"
+            className={`flex items-center space-x-1 ${
+              liked ? "text-red-500" : "text-gray-500 dark:text-gray-400"
             }`}
             disabled={!currentUser}
           >
-            <Heart size={16} fill={isLiked ? "currentColor" : "none"} />
-            <span>{likes}</span>
+            {liked ? <FaHeart /> : <FaRegHeart />}
+            <span>{likes} Likes</span>
           </button>
-          <span className="italic">
-            {post && (post.content.length / 1000).toFixed(0)} mins read
-          </span>
+          <div className="flex items-center space-x-1 text-gray-500 dark:text-gray-400">
+            <FaComment />
+            <span>Comments</span>
+          </div>
+          <button className="flex items-center space-x-1 text-gray-500 dark:text-gray-400">
+            <FaShare />
+            <span>Share</span>
+          </button>
         </div>
-      </div>
-      <div
-        className="p-3 max-w-2xl mx-auto w-full post-content"
-        dangerouslySetInnerHTML={{ __html: post && post.content }}
-      ></div>
-      <CommentSection postId={post._id} />
 
-      <div className="flex flex-col justify-center items-center mb-5">
-        <h1 className="text-xl mt-5">Recent articles</h1>
-        <div className="flex flex-wrap gap-5 mt-5 justify-center">
-          {recentPosts &&
-            recentPosts.map((post) => <PostCard key={post._id} post={post} />)}
-        </div>
-      </div>
-    </main>
+        {currentUser && currentUser._id === post.userId._id && (
+          <div className="flex space-x-4 mb-8">
+            <Link to={`/update-post/${post._id}`}>
+              <Button gradientDuoTone="purpleToBlue">Edit Post</Button>
+            </Link>
+            <Button gradientDuoTone="pinkToOrange">Delete Post</Button>
+          </div>
+        )}
+      </article>
+
+      <CommentSection postId={post._id} />
+    </div>
   );
 }

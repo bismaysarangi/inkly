@@ -1,153 +1,66 @@
 import { Link } from "react-router-dom";
-import { Heart, Calendar, User, MessageCircle, Eye } from "lucide-react";
-import { useState } from "react";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { useSelector } from "react-redux";
 
 export default function PostCard({ post }) {
-  const [likes, setLikes] = useState(post.numberOfLikes || 0);
-  const [isLiked, setIsLiked] = useState(false);
-  const [isLiking, setIsLiking] = useState(false);
   const { currentUser } = useSelector((state) => state.user);
-
-  const handleLike = async (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    if (!currentUser) {
-      return;
-    }
-
-    if (isLiking) return;
-
-    try {
-      setIsLiking(true);
-      const res = await fetch(`/server/post/likepost/${post._id}`, {
-        method: "PUT",
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setLikes(data.numberOfLikes);
-        setIsLiked(!isLiked);
-      }
-    } catch (error) {
-      console.log(error.message);
-    } finally {
-      setIsLiking(false);
-    }
-  };
-
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    });
-  };
-
-  const getReadTime = (content) => {
-    const wordsPerMinute = 200;
-    const wordCount = content
-      ? content.replace(/<[^>]*>/g, "").split(" ").length
-      : 0;
-    const readTime = Math.ceil(wordCount / wordsPerMinute);
-    return readTime < 1 ? 1 : readTime;
-  };
+  const isLiked = currentUser ? post.likes.includes(currentUser._id) : false;
 
   return (
-    <div className="group relative bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden border border-gray-200 dark:border-gray-700">
-      <Link to={`/post/${post.slug}`} className="block">
-        <div className="relative overflow-hidden">
-          <img
-            src={post.image}
-            alt={post.title}
-            className="h-48 w-full object-cover transition-transform duration-300 group-hover:scale-105"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-          {/* Category Badge */}
-          <div className="absolute top-3 left-3">
-            <span className="bg-gradient-to-r from-purple-500 to-blue-500 text-white px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide">
-              {post.category}
-            </span>
-          </div>
-
-          {/* Read Time Badge */}
-          <div className="absolute top-3 right-3">
-            <span className="bg-white/90 dark:bg-gray-800/90 text-gray-800 dark:text-gray-200 px-3 py-1 rounded-full text-xs font-medium backdrop-blur-sm">
-              {getReadTime(post.content)} min read
+    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow duration-300">
+      <Link to={`/post/${post.slug}`}>
+        <img
+          src={post.image}
+          alt={post.title}
+          className="w-full h-48 object-cover"
+        />
+      </Link>
+      <div className="p-6">
+        <div className="flex justify-between items-center mb-2">
+          <span className="text-sm font-medium px-2.5 py-0.5 rounded bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200">
+            {post.category}
+          </span>
+          <div className="flex items-center text-gray-500 dark:text-gray-400">
+            <span className="flex items-center mr-3">
+              {isLiked ? (
+                <FaHeart className="text-red-500 mr-1" />
+              ) : (
+                <FaRegHeart className="mr-1" />
+              )}
+              {post.numberOfLikes}
             </span>
           </div>
         </div>
-
-        <div className="p-6">
-          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3 line-clamp-2 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors duration-300">
+        <Link to={`/post/${post.slug}`}>
+          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 hover:text-purple-600 dark:hover:text-purple-400">
             {post.title}
           </h3>
-
-          {/* Content Preview */}
-          <div className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-2">
-            {post.content && (
-              <div
-                dangerouslySetInnerHTML={{
-                  __html:
-                    post.content.replace(/<[^>]*>/g, "").substring(0, 120) +
-                    "...",
-                }}
-              />
-            )}
-          </div>
-
-          {/* Meta Information */}
-          <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-1">
-                <Calendar className="w-4 h-4" />
-                <span>{formatDate(post.updatedAt)}</span>
-              </div>
-              <div className="flex items-center space-x-1">
-                <User className="w-4 h-4" />
-                <span>Author</span>
-              </div>
-            </div>
-
-            <div className="flex items-center space-x-3">
-              <button
-                onClick={handleLike}
-                className={`flex items-center space-x-1 transition-colors duration-200 ${
-                  isLiked ? "text-red-500" : "hover:text-red-500"
-                } ${
-                  !currentUser
-                    ? "cursor-not-allowed opacity-50"
-                    : "cursor-pointer"
-                }`}
-                disabled={!currentUser || isLiking}
-                title={!currentUser ? "Login to like posts" : "Like this post"}
-              >
-                <Heart
-                  className={`w-4 h-4 transition-all duration-200 ${
-                    isLiked ? "fill-current" : ""
-                  } ${isLiking ? "animate-pulse" : ""}`}
-                />
-                <span className="font-medium">{likes}</span>
-              </button>
-
-              <div className="flex items-center space-x-1">
-                <MessageCircle className="w-4 h-4" />
-                <span>0</span>
-              </div>
-
-              <div className="flex items-center space-x-1">
-                <Eye className="w-4 h-4" />
-                <span>{post.views || 0}</span>
-              </div>
-            </div>
+        </Link>
+        <p className="text-gray-600 dark:text-gray-400 mb-4 line-clamp-3">
+          {post.content.replace(/<[^>]*>/g, "").substring(0, 150)}...
+        </p>
+        <div className="flex justify-between items-center">
+          <Link
+            to={`/post/${post.slug}`}
+            className="text-purple-600 hover:text-purple-500 dark:text-purple-400 dark:hover:text-purple-300 font-medium"
+          >
+            Read more
+          </Link>
+          <div className="flex items-center">
+            <img
+              src={
+                post.userId.profilePicture ||
+                "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+              }
+              alt={post.userId.username}
+              className="w-8 h-8 rounded-full object-cover mr-2"
+            />
+            <span className="text-sm text-gray-600 dark:text-gray-400">
+              {post.userId.username}
+            </span>
           </div>
         </div>
-      </Link>
-
-      {/* Hover Overlay */}
-      <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-purple-500 to-blue-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
+      </div>
     </div>
   );
 }
