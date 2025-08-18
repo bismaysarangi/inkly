@@ -11,6 +11,7 @@ export const updateUser = async (req, res, next) => {
     return next(errorHandler(403, "You are not allowed to update this user"));
   }
 
+  // Validate password
   if (req.body.password) {
     if (req.body.password.length < 6) {
       return next(errorHandler(400, "Password must be at least 6 characters"));
@@ -18,10 +19,11 @@ export const updateUser = async (req, res, next) => {
     req.body.password = bcryptjs.hashSync(req.body.password, 10);
   }
 
+  // Validate username
   if (req.body.username) {
-    if (req.body.username.length < 7 || req.body.username.length > 20) {
+    if (req.body.username.length < 3 || req.body.username.length > 20) {
       return next(
-        errorHandler(400, "Username must be between 7 and 20 characters")
+        errorHandler(400, "Username must be between 3 and 20 characters")
       );
     }
     if (req.body.username.includes(" ")) {
@@ -38,19 +40,22 @@ export const updateUser = async (req, res, next) => {
   }
 
   try {
+    const updateData = {
+      username: req.body.username,
+      email: req.body.email,
+      ...(req.body.password && { password: req.body.password }),
+      ...(req.body.profilePicture && {
+        profilePicture: req.body.profilePicture,
+      }),
+    };
+
     const updatedUser = await User.findByIdAndUpdate(
       req.params.userId,
-      {
-        $set: {
-          username: req.body.username,
-          email: req.body.email,
-          profilePicture: req.body.profilePicture,
-          password: req.body.password,
-        },
-      },
-      { new: true }
+      { $set: updateData },
+      { new: true, runValidators: true }
     );
-    const { password, ...rest } = updatedUser._doc;
+
+    const { password, refreshToken, ...rest } = updatedUser._doc;
     res.status(200).json(rest);
   } catch (error) {
     next(error);

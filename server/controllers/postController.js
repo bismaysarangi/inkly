@@ -12,15 +12,26 @@ export const createPost = async (req, res, next) => {
     .toLowerCase()
     .replace(/[^a-zA-Z0-9-]/g, "");
 
+  const image =
+    req.body.image || "https://via.placeholder.com/600x400?text=Blog+Post";
+
   const newPost = new Post({
-    ...req.body,
+    title: req.body.title,
+    content: req.body.content,
+    image: image,
+    category: req.body.category || "uncategorized",
     slug,
     userId: req.user.id,
   });
 
   try {
     const savedPost = await newPost.save();
-    res.status(201).json(savedPost);
+
+    const populatedPost = await Post.findById(savedPost._id)
+      .populate("userId", "username profilePicture")
+      .exec();
+
+    res.status(201).json(populatedPost);
   } catch (error) {
     next(error);
   }

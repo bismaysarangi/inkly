@@ -5,25 +5,45 @@ const commentSchema = new mongoose.Schema(
     content: {
       type: String,
       required: true,
+      trim: true,
     },
     postId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Post",
       required: true,
     },
     userId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
       required: true,
     },
-    likes: {
-      type: Array,
-      default: [],
-    },
+    likes: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
     numberOfLikes: {
       type: Number,
       default: 0,
     },
+    replies: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Comment",
+      },
+    ],
+    parentComment: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Comment",
+    },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    toJSON: {
+      virtuals: true,
+    },
+  }
 );
 
 const Comment = mongoose.model("Comment", commentSchema);

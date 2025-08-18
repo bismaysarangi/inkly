@@ -1,12 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { persistReducer } from "redux-persist";
+import storage from "redux-persist/lib/storage";
 
 const initialState = {
   currentUser: null,
   loading: false,
   error: null,
+  token: null,
 };
 
-export const userSlice = createSlice({
+const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
@@ -15,7 +18,8 @@ export const userSlice = createSlice({
       state.error = null;
     },
     signInSuccess: (state, action) => {
-      state.currentUser = action.payload;
+      state.currentUser = action.payload.user;
+      state.token = action.payload.token;
       state.loading = false;
       state.error = null;
     },
@@ -25,12 +29,32 @@ export const userSlice = createSlice({
     },
     signOutSuccess: (state) => {
       state.currentUser = null;
+      state.token = null;
+      state.loading = false;
+      state.error = null;
+    },
+    updateUserSuccess: (state, action) => {
+      state.currentUser = action.payload;
       state.loading = false;
       state.error = null;
     },
   },
 });
 
-export const { signInStart, signInSuccess, signInFailure, signOutSuccess } =
-  userSlice.actions;
-export default userSlice.reducer;
+const persistConfig = {
+  key: "user",
+  storage,
+  whitelist: ["currentUser", "token"],
+};
+
+const persistedUserReducer = persistReducer(persistConfig, userSlice.reducer);
+
+export const {
+  signInStart,
+  signInSuccess,
+  signInFailure,
+  signOutSuccess,
+  updateUserSuccess,
+} = userSlice.actions;
+
+export default persistedUserReducer;

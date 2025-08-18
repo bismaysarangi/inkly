@@ -1,8 +1,19 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Button, Card, Spinner, Table } from "flowbite-react";
-import { HiOutlinePencil, HiOutlineTrash } from "react-icons/hi";
 import { useSelector } from "react-redux";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { Pencil, Trash } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
 
 export default function Dashboard() {
   const [userPosts, setUserPosts] = useState([]);
@@ -16,25 +27,19 @@ export default function Dashboard() {
         setLoading(true);
         const res = await fetch(
           `/server/post/getposts?userId=${currentUser._id}`,
-          {
-            credentials: "include",
-          }
+          { credentials: "include" }
         );
         const data = await res.json();
-        if (!res.ok) {
-          throw new Error(data.message || "Failed to fetch posts");
-        }
+        if (!res.ok) throw new Error(data.message || "Failed to fetch posts");
         setUserPosts(data.posts);
-        setLoading(false);
-      } catch (error) {
-        setError(error.message);
+      } catch (err) {
+        setError(err.message);
+      } finally {
         setLoading(false);
       }
     };
 
-    if (currentUser?._id) {
-      fetchPosts();
-    }
+    if (currentUser?._id) fetchPosts();
   }, [currentUser]);
 
   const handleDelete = async (postId) => {
@@ -43,144 +48,141 @@ export default function Dashboard() {
     try {
       const res = await fetch(
         `/server/post/deletepost/${postId}/${currentUser._id}`,
-        {
-          method: "DELETE",
-          credentials: "include",
-        }
+        { method: "DELETE", credentials: "include" }
       );
-
       const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.message || "Failed to delete post");
-      }
+      if (!res.ok) throw new Error(data.message || "Failed to delete post");
 
-      setUserPosts(userPosts.filter((post) => post._id !== postId));
-    } catch (error) {
-      setError(error.message);
+      setUserPosts((prev) => prev.filter((post) => post._id !== postId));
+    } catch (err) {
+      setError(err.message);
     }
   };
 
   return (
     <div className="min-h-screen py-12 px-4 mx-auto max-w-6xl">
+      {/* Header */}
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-          Dashboard
-        </h1>
+        <h1 className="text-3xl font-bold">Dashboard</h1>
         <Link to="/create-post">
-          <Button className="bg-gradient-to-br from-purple-600 to-blue-500 text-white hover:bg-gradient-to-bl focus:ring-blue-300 dark:focus:ring-blue-800">
+          <Button className="bg-gradient-to-r from-purple-600 to-blue-500 text-white">
             Create Post
           </Button>
         </Link>
       </div>
 
+      {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <Card>
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-              Total Posts
-            </h3>
-            <span className="text-2xl font-bold text-purple-600 dark:text-purple-400">
+          <CardHeader>
+            <CardTitle>Total Posts</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-2xl font-bold text-purple-600">
               {loading ? "..." : userPosts.length}
-            </span>
-          </div>
+            </p>
+          </CardContent>
         </Card>
 
         <Card>
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-              Total Likes
-            </h3>
-            <span className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+          <CardHeader>
+            <CardTitle>Total Likes</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-2xl font-bold text-blue-600">
               {loading
                 ? "..."
                 : userPosts.reduce((acc, post) => acc + post.numberOfLikes, 0)}
-            </span>
-          </div>
+            </p>
+          </CardContent>
         </Card>
 
         <Card>
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-              Account Status
-            </h3>
-            <span className="text-sm px-3 py-1 rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+          <CardHeader>
+            <CardTitle>Account Status</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Badge variant="outline" className="bg-green-100 text-green-700">
               Active
-            </span>
-          </div>
+            </Badge>
+          </CardContent>
         </Card>
       </div>
 
+      {/* Posts Table */}
       <Card>
-        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-          Your Posts
-        </h2>
-        {loading ? (
-          <div className="flex justify-center">
-            <Spinner size="xl" />
-          </div>
-        ) : error ? (
-          <div className="text-center text-red-500 dark:text-red-400">
-            {error}
-          </div>
-        ) : userPosts.length === 0 ? (
-          <div className="text-center text-gray-500 dark:text-gray-400">
-            You haven't created any posts yet.{" "}
-            <Link to="/create-post" className="text-purple-600 hover:underline">
-              Create one now
-            </Link>
-            .
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <Table hoverable>
-              <Table.Head>
-                <Table.HeadCell>Title</Table.HeadCell>
-                <Table.HeadCell>Category</Table.HeadCell>
-                <Table.HeadCell>Likes</Table.HeadCell>
-                <Table.HeadCell>Date</Table.HeadCell>
-                <Table.HeadCell>Actions</Table.HeadCell>
-              </Table.Head>
-              <Table.Body className="divide-y">
-                {userPosts.map((post) => (
-                  <Table.Row
-                    key={post._id}
-                    className="bg-white dark:border-gray-700 dark:bg-gray-800"
-                  >
-                    <Table.Cell className="font-medium text-gray-900 dark:text-white">
-                      <Link
-                        to={`/post/${post.slug}`}
-                        className="hover:underline"
-                      >
-                        {post.title}
-                      </Link>
-                    </Table.Cell>
-                    <Table.Cell>{post.category}</Table.Cell>
-                    <Table.Cell>{post.numberOfLikes}</Table.Cell>
-                    <Table.Cell>
-                      {new Date(post.createdAt).toLocaleDateString()}
-                    </Table.Cell>
-                    <Table.Cell>
-                      <div className="flex space-x-2">
-                        <Link to={`/update-post/${post._id}`}>
-                          <Button size="xs" gradientMonochrome="info">
-                            <HiOutlinePencil className="mr-1" /> Edit
-                          </Button>
-                        </Link>
-                        <Button
-                          size="xs"
-                          gradientMonochrome="failure"
-                          onClick={() => handleDelete(post._id)}
+        <CardHeader>
+          <CardTitle>Your Posts</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {loading ? (
+            <div className="flex justify-center p-6">
+              <Spinner size="lg" />
+            </div>
+          ) : error ? (
+            <div className="text-center text-red-500">{error}</div>
+          ) : userPosts.length === 0 ? (
+            <div className="text-center text-gray-500">
+              You haven’t created any posts yet.{" "}
+              <Link
+                to="/create-post"
+                className="text-purple-600 hover:underline"
+              >
+                Create one now
+              </Link>
+              .
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Title</TableHead>
+                    <TableHead>Category</TableHead>
+                    <TableHead>Likes</TableHead>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {userPosts.map((post) => (
+                    <TableRow key={post._id}>
+                      <TableCell>
+                        <Link
+                          to={`/post/${post.slug}`}
+                          className="font-medium hover:underline"
                         >
-                          <HiOutlineTrash className="mr-1" /> Delete
-                        </Button>
-                      </div>
-                    </Table.Cell>
-                  </Table.Row>
-                ))}
-              </Table.Body>
-            </Table>
-          </div>
-        )}
+                          {post.title}
+                        </Link>
+                      </TableCell>
+                      <TableCell>{post.category}</TableCell>
+                      <TableCell>{post.numberOfLikes}</TableCell>
+                      <TableCell>
+                        {new Date(post.createdAt).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex space-x-2">
+                          <Link to={`/update-post/${post._id}`}>
+                            <Button size="sm" variant="outline">
+                              <Pencil className="mr-1 h-4 w-4" /> Edit
+                            </Button>
+                          </Link>
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={() => handleDelete(post._id)}
+                          >
+                            <Trash className="mr-1 h-4 w-4" /> Delete
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
+        </CardContent>
       </Card>
     </div>
   );
