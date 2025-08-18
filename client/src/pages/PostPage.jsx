@@ -168,9 +168,13 @@ export default function PostPage() {
         {currentUser && currentUser._id === post.userId._id && (
           <div className="flex space-x-4 mb-8">
             <Link to={`/update-post/${post._id}`}>
-              <Button gradientDuoTone="purpleToBlue">Edit Post</Button>
+              <Button className="bg-gradient-to-br from-purple-600 to-blue-500 text-white hover:bg-gradient-to-bl focus:ring-blue-300 dark:focus:ring-blue-800">
+                Edit Post
+              </Button>
             </Link>
-            <Button gradientDuoTone="pinkToOrange">Delete Post</Button>
+            <Button className="bg-gradient-to-br from-pink-600 to-orange-500 text-white hover:bg-gradient-to-bl focus:ring-orange-300 dark:focus:ring-orange-800">
+              Delete Post
+            </Button>
           </div>
         )}
       </article>

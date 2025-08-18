@@ -15,28 +15,50 @@ export default function Dashboard() {
       try {
         setLoading(true);
         const res = await fetch(
-          `/server/post/getposts?userId=${currentUser._id}`
+          `/server/post/getposts?userId=${currentUser._id}`,
+          {
+            credentials: "include",
+          }
         );
         const data = await res.json();
         if (!res.ok) {
-          setError(data.message);
-          setLoading(false);
-          return;
+          throw new Error(data.message || "Failed to fetch posts");
         }
-        if (res.ok) {
-          setUserPosts(data.posts);
-          setLoading(false);
-          setError(null);
-        }
+        setUserPosts(data.posts);
+        setLoading(false);
       } catch (error) {
         setError(error.message);
         setLoading(false);
       }
     };
-    if (currentUser) {
+
+    if (currentUser?._id) {
       fetchPosts();
     }
   }, [currentUser]);
+
+  const handleDelete = async (postId) => {
+    if (!window.confirm("Are you sure you want to delete this post?")) return;
+
+    try {
+      const res = await fetch(
+        `/server/post/deletepost/${postId}/${currentUser._id}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        }
+      );
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || "Failed to delete post");
+      }
+
+      setUserPosts(userPosts.filter((post) => post._id !== postId));
+    } catch (error) {
+      setError(error.message);
+    }
+  };
 
   return (
     <div className="min-h-screen py-12 px-4 mx-auto max-w-6xl">
@@ -45,7 +67,9 @@ export default function Dashboard() {
           Dashboard
         </h1>
         <Link to="/create-post">
-          <Button gradientDuoTone="purpleToBlue">Create Post</Button>
+          <Button className="bg-gradient-to-br from-purple-600 to-blue-500 text-white hover:bg-gradient-to-bl focus:ring-blue-300 dark:focus:ring-blue-800">
+            Create Post
+          </Button>
         </Link>
       </div>
 
@@ -142,7 +166,11 @@ export default function Dashboard() {
                             <HiOutlinePencil className="mr-1" /> Edit
                           </Button>
                         </Link>
-                        <Button size="xs" gradientMonochrome="failure">
+                        <Button
+                          size="xs"
+                          gradientMonochrome="failure"
+                          onClick={() => handleDelete(post._id)}
+                        >
                           <HiOutlineTrash className="mr-1" /> Delete
                         </Button>
                       </div>

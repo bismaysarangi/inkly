@@ -13,6 +13,7 @@ import CreatePost from "./pages/CreatePost";
 import PostPage from "./pages/PostPage";
 import Search from "./pages/Search";
 import UpdatePost from "./pages/UpdatePost";
+import Profile from "./pages/Pages";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
               <Route path="/post/:postSlug" element={<PostPage />} />
               <Route path="/update-post/:postId" element={<UpdatePost />} />
               <Route path="/search" element={<Search />} />
+              <Route path="/profile" element={<Profile />} />
               <Route
                 path="*"
                 element={

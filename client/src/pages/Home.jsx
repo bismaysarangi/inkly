@@ -50,12 +50,16 @@ export default function Home() {
               Join our community of writers and readers today.
             </p>
             <div className="flex flex-wrap gap-4">
-              <Button gradientDuoTone="purpleToBlue" as={Link} to="/sign-up">
+              <Button
+                className="bg-gradient-to-br from-purple-600 to-blue-500 text-white hover:bg-gradient-to-bl focus:ring-blue-300 dark:focus:ring-blue-800"
+                as={Link}
+                to="/sign-up"
+              >
                 Get Started
               </Button>
               <Button
                 outline
-                gradientDuoTone="purpleToBlue"
+                className="bg-gradient-to-br from-purple-600 to-blue-500 text-white hover:bg-gradient-to-bl focus:ring-blue-300 dark:focus:ring-blue-800"
                 as={Link}
                 to="/about"
               >
@@ -114,10 +118,9 @@ export default function Home() {
               thousands of readers.
             </p>
             <Button
-              gradientDuoTone="purpleToBlue"
+              className="mx-auto bg-gradient-to-br from-purple-600 to-blue-500 text-white hover:bg-gradient-to-bl focus:ring-blue-300 dark:focus:ring-blue-800"
               as={Link}
               to="/sign-up"
-              className="mx-auto"
             >
               Create an account
             </Button>

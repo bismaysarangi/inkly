@@ -135,14 +135,14 @@ export default function Comment({ comment }) {
               <div className="flex space-x-2">
                 <Button
                   size="xs"
-                  gradientDuoTone="purpleToBlue"
                   onClick={handleEdit}
+                  className="bg-gradient-to-br from-purple-600 to-blue-500 text-white hover:bg-gradient-to-bl focus:ring-blue-300 dark:focus:ring-blue-800"
                 >
                   Save
                 </Button>
                 <Button
                   size="xs"
-                  gradientDuoTone="pinkToOrange"
+                  className="bg-gradient-to-br from-pink-500 to-orange-400 text-white hover:bg-gradient-to-bl focus:ring-pink-200 dark:focus:ring-pink-800"
                   outline
                   onClick={() => setIsEditing(false)}
                 >
@@ -191,12 +191,16 @@ export default function Comment({ comment }) {
                 className="mb-2"
               />
               <div className="flex space-x-2">
-                <Button size="xs" gradientDuoTone="purpleToBlue" type="submit">
+                <Button
+                  size="xs"
+                  className="bg-gradient-to-br from-purple-600 to-blue-500 text-white hover:bg-gradient-to-bl focus:ring-blue-300 dark:focus:ring-blue-800"
+                  type="submit"
+                >
                   Post Reply
                 </Button>
                 <Button
                   size="xs"
-                  gradientDuoTone="pinkToOrange"
+                  className="bg-gradient-to-br from-pink-500 to-orange-400 text-white hover:bg-gradient-to-bl focus:ring-pink-200 dark:focus:ring-pink-800"
                   outline
                   onClick={() => setIsReplying(false)}
                 >

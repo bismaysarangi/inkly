@@ -13,9 +13,12 @@ import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 
 export default function CreatePost() {
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({
+    title: "",
+    category: "",
+    image: "",
+  });
   const [content, setContent] = useState("");
-  const [imageFile, setImageFile] = useState(null);
   const [imageUploading, setImageUploading] = useState(false);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -32,10 +35,8 @@ export default function CreatePost() {
       }
     };
 
-    // Fix immediately and after a short delay to ensure ReactQuill is mounted
     fixTextDirection();
     const timer = setTimeout(fixTextDirection, 100);
-
     return () => clearTimeout(timer);
   }, []);
 
@@ -45,27 +46,29 @@ export default function CreatePost() {
 
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
-    if (file) {
-      setImageUploading(true);
-      try {
-        const formData = new FormData();
-        formData.append("image", file);
-        const res = await fetch("/server/upload", {
-          method: "POST",
-          body: formData,
-        });
-        const data = await res.json();
-        if (!res.ok) {
-          setError(data.message);
-          setImageUploading(false);
-          return;
-        }
-        setFormData({ ...formData, image: data.imageUrl });
-        setImageUploading(false);
-      } catch (error) {
-        setError(error.message);
-        setImageUploading(false);
+    if (!file) return;
+
+    setImageUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("image", file);
+
+      const res = await fetch("/server/upload", {
+        method: "POST",
+        body: formData,
+        credentials: "include",
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || "Image upload failed");
       }
+
+      setFormData((prev) => ({ ...prev, image: data.imageUrl }));
+      setImageUploading(false);
+    } catch (error) {
+      setError(error.message);
+      setImageUploading(false);
     }
   };
 
@@ -78,6 +81,7 @@ export default function CreatePost() {
     try {
       setLoading(true);
       setError(null);
+
       const postData = {
         ...formData,
         content,
@@ -90,20 +94,18 @@ export default function CreatePost() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(postData),
+        credentials: "include",
       });
 
       const data = await res.json();
       if (!res.ok) {
-        setError(data.message);
-        setLoading(false);
-        return;
+        throw new Error(data.message || "Failed to create post");
       }
-      if (res.ok) {
-        setLoading(false);
-        navigate(`/post/${data.slug}`);
-      }
+
+      navigate(`/post/${data.slug}`);
     } catch (error) {
       setError(error.message);
+    } finally {
       setLoading(false);
     }
   };
@@ -113,6 +115,7 @@ export default function CreatePost() {
       <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">
         Create a Post
       </h1>
+
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-700">
         {error && (
           <div className="mb-6 p-4 bg-red-100 border-l-4 border-red-500 text-red-700 dark:bg-red-900 dark:text-red-200">
@@ -129,12 +132,18 @@ export default function CreatePost() {
               placeholder="Enter post title"
               required
               onChange={handleChange}
+              value={formData.title}
             />
           </div>
 
           <div>
             <Label htmlFor="category" value="Category" />
-            <Select id="category" required onChange={handleChange}>
+            <Select
+              id="category"
+              required
+              onChange={handleChange}
+              value={formData.category}
+            >
               <option value="">Select a category</option>
               <option value="technology">Technology</option>
               <option value="business">Business</option>
@@ -156,6 +165,7 @@ export default function CreatePost() {
               id="image"
               accept="image/*"
               onChange={handleImageUpload}
+              disabled={imageUploading}
               className="block w-full text-sm text-gray-500
                 file:mr-4 file:py-2 file:px-4
                 file:rounded-md file:border-0
@@ -203,7 +213,7 @@ export default function CreatePost() {
           <div className="flex justify-end">
             <Button
               type="submit"
-              gradientDuoTone="purpleToBlue"
+              className="bg-gradient-to-br from-purple-600 to-blue-500 text-white hover:bg-gradient-to-bl focus:ring-blue-300 dark:focus:ring-blue-800"
               disabled={loading || imageUploading}
             >
               {loading ? (
@@ -218,28 +228,6 @@ export default function CreatePost() {
           </div>
         </form>
       </div>
-
-      {/* Custom CSS to fix text direction */}
-      <style jsx>{`
-        .quill-wrapper .ql-container {
-          direction: ltr !important;
-        }
-
-        .quill-wrapper .ql-editor {
-          direction: ltr !important;
-          text-align: left !important;
-          unicode-bidi: normal !important;
-        }
-
-        .quill-wrapper .ql-editor p {
-          direction: ltr !important;
-          text-align: left !important;
-        }
-
-        .quill-wrapper .ql-editor * {
-          direction: ltr !important;
-        }
-      `}</style>
     </div>
   );
 }

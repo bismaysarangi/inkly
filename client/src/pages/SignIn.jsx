@@ -140,8 +140,7 @@ export default function SignIn() {
             <Button
               type="submit"
               disabled={loading}
-              gradientDuoTone="purpleToBlue"
-              className="w-full py-3 text-lg font-semibold"
+              className="w-full py-3 text-lg font-semibold bg-gradient-to-br from-purple-600 to-blue-500 text-white hover:bg-gradient-to-bl focus:ring-blue-300 dark:focus:ring-blue-800"
             >
               {loading ? (
                 <>

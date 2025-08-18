@@ -95,7 +95,7 @@ export default function Search() {
       {showMore && (
         <div className="text-center">
           <Button
-            gradientDuoTone="purpleToBlue"
+            className="bg-gradient-to-br from-purple-600 to-blue-500 text-white hover:bg-gradient-to-bl focus:ring-blue-300 dark:focus:ring-blue-800"
             onClick={handleShowMore}
             disabled={loading}
           >

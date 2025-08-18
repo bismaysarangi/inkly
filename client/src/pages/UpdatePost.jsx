@@ -236,7 +236,7 @@ export default function UpdatePost() {
             </Button>
             <Button
               type="submit"
-              gradientDuoTone="purpleToBlue"
+              className="bg-gradient-to-br from-purple-600 to-blue-500 text-white hover:bg-gradient-to-bl focus:ring-blue-300 dark:focus:ring-blue-800"
               disabled={loading || imageUploading}
             >
               {loading ? (

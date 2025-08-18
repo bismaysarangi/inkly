@@ -88,7 +88,7 @@ export default function CommentSection({ postId }) {
           />
           <Button
             type="submit"
-            gradientDuoTone="purpleToBlue"
+            className="bg-gradient-to-br from-purple-600 to-blue-500 text-white hover:bg-gradient-to-bl focus:ring-blue-300 dark:focus:ring-blue-800"
             disabled={commentLoading}
           >
             {commentLoading ? (
@@ -107,7 +107,9 @@ export default function CommentSection({ postId }) {
             You must be signed in to leave a comment.
           </p>
           <Link to="/sign-in">
-            <Button gradientDuoTone="purpleToBlue">Sign In</Button>
+            <Button className="bg-gradient-to-br from-purple-600 to-blue-500 text-white hover:bg-gradient-to-bl focus:ring-blue-300 dark:focus:ring-blue-800">
+              Sign In
+            </Button>
           </Link>
         </div>
       )}

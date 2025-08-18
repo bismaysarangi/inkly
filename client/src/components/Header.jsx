@@ -15,6 +15,7 @@ export default function Header() {
     try {
       const res = await fetch("/server/auth/signout", {
         method: "POST",
+        credentials: "include",
       });
       const data = await res.json();
       if (!res.ok) {
@@ -57,18 +58,20 @@ export default function Header() {
 
           {currentUser ? (
             <div className="flex items-center space-x-4">
-              <Link to="/dashboard">
+              <Link to="/profile">
                 <img
-                  src={currentUser.profilePicture}
+                  src={
+                    currentUser.profilePicture ||
+                    "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+                  }
                   alt="profile"
                   className="h-8 w-8 rounded-full object-cover"
                 />
               </Link>
               <Button
-                gradientDuoTone="purpleToBlue"
+                className="hidden sm:inline-flex bg-gradient-to-br from-purple-600 to-blue-500 text-white hover:bg-gradient-to-bl focus:ring-blue-300 dark:focus:ring-blue-800"
                 outline
                 onClick={handleSignOut}
-                className="hidden sm:inline-flex"
               >
                 <FaSignOutAlt className="mr-2" />
                 Sign Out
@@ -77,12 +80,17 @@ export default function Header() {
           ) : (
             <div className="flex space-x-2">
               <Link to="/sign-in">
-                <Button gradientDuoTone="purpleToBlue" outline>
+                <Button
+                  className="bg-gradient-to-br from-purple-600 to-blue-500 text-white hover:bg-gradient-to-bl focus:ring-blue-300 dark:focus:ring-blue-800"
+                  outline
+                >
                   Sign In
                 </Button>
               </Link>
               <Link to="/sign-up">
-                <Button gradientDuoTone="purpleToBlue">Sign Up</Button>
+                <Button className="bg-gradient-to-br from-purple-600 to-blue-500 text-white hover:bg-gradient-to-bl focus:ring-blue-300 dark:focus:ring-blue-800">
+                  Sign Up
+                </Button>
               </Link>
             </div>
           )}
