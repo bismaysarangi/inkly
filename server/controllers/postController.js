@@ -32,7 +32,7 @@ export const getPosts = async (req, res, next) => {
     const limit = parseInt(req.query.limit) || 9;
     const sortDirection = req.query.order === "asc" ? 1 : -1;
 
-    const posts = await Post.find({
+    const query = {
       ...(req.query.userId && { userId: req.query.userId }),
       ...(req.query.category && { category: req.query.category }),
       ...(req.query.slug && { slug: req.query.slug }),
@@ -43,12 +43,15 @@ export const getPosts = async (req, res, next) => {
           { content: { $regex: req.query.searchTerm, $options: "i" } },
         ],
       }),
-    })
+    };
+
+    const posts = await Post.find(query)
+      .populate("userId", "username profilePicture")
       .sort({ updatedAt: sortDirection })
       .skip(startIndex)
       .limit(limit);
 
-    const totalPosts = await Post.countDocuments();
+    const totalPosts = await Post.countDocuments(query);
 
     const now = new Date();
     const oneMonthAgo = new Date(
@@ -59,6 +62,7 @@ export const getPosts = async (req, res, next) => {
 
     const lastMonthPosts = await Post.countDocuments({
       createdAt: { $gte: oneMonthAgo },
+      ...query,
     });
 
     res.status(200).json({
@@ -101,7 +105,7 @@ export const updatePost = async (req, res, next) => {
         },
       },
       { new: true }
-    );
+    ).populate("userId", "username profilePicture");
     res.status(200).json(updatedPost);
   } catch (error) {
     next(error);
