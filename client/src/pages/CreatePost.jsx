@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Button,
@@ -9,8 +9,8 @@ import {
   TextInput,
 } from "flowbite-react";
 import { useSelector } from "react-redux";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
+import ReactQuill from "react-quill-new";
+import "react-quill-new/dist/quill.snow.css";
 
 export default function CreatePost() {
   const [formData, setFormData] = useState({});
@@ -21,6 +21,24 @@ export default function CreatePost() {
   const [loading, setLoading] = useState(false);
   const { currentUser } = useSelector((state) => state.user);
   const navigate = useNavigate();
+
+  // Fix text direction issue
+  useEffect(() => {
+    const fixTextDirection = () => {
+      const editor = document.querySelector(".ql-editor");
+      if (editor) {
+        editor.style.direction = "ltr";
+        editor.style.textAlign = "left";
+        editor.style.unicodeBidi = "normal";
+      }
+    };
+
+    // Fix immediately and after a short delay to ensure ReactQuill is mounted
+    fixTextDirection();
+    const timer = setTimeout(fixTextDirection, 100);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -160,21 +178,27 @@ export default function CreatePost() {
 
           <div>
             <Label value="Post Content" />
-            <ReactQuill
-              theme="snow"
-              value={content}
-              onChange={setContent}
-              modules={{
-                toolbar: [
-                  [{ header: [1, 2, false] }],
-                  ["bold", "italic", "underline", "strike", "blockquote"],
-                  [{ list: "ordered" }, { list: "bullet" }],
-                  ["link", "image"],
-                  ["clean"],
-                ],
-              }}
-              className="bg-white dark:bg-gray-700 rounded-lg"
-            />
+            <div className="quill-wrapper">
+              <ReactQuill
+                theme="snow"
+                value={content}
+                onChange={setContent}
+                modules={{
+                  toolbar: [
+                    [{ header: [1, 2, false] }],
+                    ["bold", "italic", "underline", "strike", "blockquote"],
+                    [{ list: "ordered" }, { list: "bullet" }],
+                    ["link", "image"],
+                    ["clean"],
+                  ],
+                }}
+                style={{
+                  direction: "ltr",
+                  textAlign: "left",
+                }}
+                className="bg-white dark:bg-gray-700 rounded-lg"
+              />
+            </div>
           </div>
 
           <div className="flex justify-end">
@@ -195,6 +219,28 @@ export default function CreatePost() {
           </div>
         </form>
       </div>
+
+      {/* Custom CSS to fix text direction */}
+      <style jsx>{`
+        .quill-wrapper .ql-container {
+          direction: ltr !important;
+        }
+
+        .quill-wrapper .ql-editor {
+          direction: ltr !important;
+          text-align: left !important;
+          unicode-bidi: normal !important;
+        }
+
+        .quill-wrapper .ql-editor p {
+          direction: ltr !important;
+          text-align: left !important;
+        }
+
+        .quill-wrapper .ql-editor * {
+          direction: ltr !important;
+        }
+      `}</style>
     </div>
   );
 }
