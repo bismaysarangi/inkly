@@ -135,15 +135,6 @@ export default function SignIn() {
                   Remember me
                 </label>
               </div>
-
-              <div className="text-sm">
-                <a
-                  href="#"
-                  className="font-medium text-purple-600 hover:text-purple-500 dark:text-purple-400 dark:hover:text-purple-300"
-                >
-                  Forgot your password?
-                </a>
-              </div>
             </div>
 
             <Button
