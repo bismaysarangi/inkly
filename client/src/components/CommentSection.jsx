@@ -1,22 +1,47 @@
-import { Alert, Button, Textarea } from "flowbite-react";
 import { useEffect, useState } from "react";
+import { Button, Textarea, Spinner } from "flowbite-react";
 import { useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
 import Comment from "./Comment";
 
 export default function CommentSection({ postId }) {
   const { currentUser } = useSelector((state) => state.user);
   const [comment, setComment] = useState("");
-  const [commentError, setCommentError] = useState(null);
   const [comments, setComments] = useState([]);
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [commentLoading, setCommentLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        setLoading(true);
+        const res = await fetch(`/server/comment/getPostComments/${postId}`);
+        const data = await res.json();
+        if (!res.ok) {
+          setError(data.message);
+          setLoading(false);
+          return;
+        }
+        if (res.ok) {
+          setComments(data);
+          setLoading(false);
+          setError(null);
+        }
+      } catch (error) {
+        setError(error.message);
+        setLoading(false);
+      }
+    };
+    fetchComments();
+  }, [postId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (comment.length > 200) {
+    if (!comment) {
       return;
     }
     try {
+      setCommentLoading(true);
       const res = await fetch("/server/comment/create", {
         method: "POST",
         headers: {
@@ -29,143 +54,82 @@ export default function CommentSection({ postId }) {
         }),
       });
       const data = await res.json();
-      if (res.ok) {
-        setComment("");
-        setCommentError(null);
-        setComments([data, ...comments]);
-      }
-    } catch (error) {
-      setCommentError(error.message);
-    }
-  };
-
-  useEffect(() => {
-    const getComments = async () => {
-      try {
-        const res = await fetch(`/server/comment/getPostComments/${postId}`);
-        if (res.ok) {
-          const data = await res.json();
-          setComments(data);
-        }
-      } catch (error) {
-        console.log(error.message);
-      }
-    };
-    getComments();
-  }, [postId]);
-
-  const handleLike = async (commentId) => {
-    try {
-      if (!currentUser) {
-        navigate("/login");
+      if (!res.ok) {
+        setError(data.message);
+        setCommentLoading(false);
         return;
       }
-      const res = await fetch(`/server/comment/likeComment/${commentId}`, {
-        method: "PUT",
-      });
       if (res.ok) {
-        const data = await res.json();
-        setComments(
-          comments.map((comment) =>
-            comment._id === commentId
-              ? {
-                  ...comment,
-                  likes: data.likes,
-                  numberOfLikes: data.likes.length,
-                }
-              : comment
-          )
-        );
+        setComment("");
+        setComments([data, ...comments]);
+        setCommentLoading(false);
+        setError(null);
       }
     } catch (error) {
-      console.log(error.message);
+      setError(error.message);
+      setCommentLoading(false);
     }
-  };
-
-  const handleEdit = async (comment, editedContent) => {
-    setComments(
-      comments.map((c) =>
-        c._id === comment._id ? { ...c, content: editedContent } : c
-      )
-    );
-  };
-
-  const handleDelete = async (commentId) => {
-    setComments(comments.filter((comment) => comment._id !== commentId));
   };
 
   return (
-    <div className="max-w-2xl mx-auto w-full p-3">
+    <div className="max-w-4xl mx-auto">
+      <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+        Comments ({comments.length})
+      </h2>
+
       {currentUser ? (
-        <div className="flex items-center gap-1 my-5 text-gray-500 text-sm">
-          <p>Signed in as:</p>
-          <img
-            className="h-5 w-5 object-cover rounded-full"
-            src={currentUser.profilePicture}
-            alt=""
-          />
-          <Link
-            to={"/dashboard?tab=profile"}
-            className="text-xs text-cyan-600 hover:underline"
-          >
-            @{currentUser.username}
-          </Link>
-        </div>
-      ) : (
-        <div className="text-sm text-teal-500 my-5 flex gap-1">
-          You must be signed in to comment.
-          <Link className="text-blue-500 hover:underline" to={"/login"}>
-            Sign In
-          </Link>
-        </div>
-      )}
-      {currentUser && (
-        <form
-          onSubmit={handleSubmit}
-          className="border border-teal-500 rounded-md p-3"
-        >
+        <form onSubmit={handleSubmit} className="mb-8">
           <Textarea
-            placeholder="Add a comment..."
-            rows="3"
-            maxLength="200"
-            onChange={(e) => setComment(e.target.value)}
+            placeholder="Write a comment..."
+            rows="4"
             value={comment}
+            onChange={(e) => setComment(e.target.value)}
+            className="mb-4"
           />
-          <div className="flex justify-between items-center mt-5">
-            <p className="text-gray-500 text-xs">
-              {200 - comment.length} characters remaining
-            </p>
-            <Button outline gradientDuoTone="purpleToBlue" type="submit">
-              Submit
-            </Button>
-          </div>
-          {commentError && (
-            <Alert color="failure" className="mt-5">
-              {commentError}
-            </Alert>
-          )}
+          <Button
+            type="submit"
+            gradientDuoTone="purpleToBlue"
+            disabled={commentLoading}
+          >
+            {commentLoading ? (
+              <>
+                <Spinner size="sm" className="mr-2" />
+                Posting...
+              </>
+            ) : (
+              "Post Comment"
+            )}
+          </Button>
         </form>
-      )}
-      {comments.length === 0 ? (
-        <p className="text-sm my-5">No comments yet!</p>
       ) : (
-        <>
-          <div className="text-sm my-5 flex items-center gap-1">
-            <p>Comments</p>
-            <div className="border border-gray-400 py-1 px-2 rounded-sm">
-              <p>{comments.length}</p>
-            </div>
-          </div>
+        <div className="mb-8 text-center">
+          <p className="text-gray-600 dark:text-gray-400 mb-4">
+            You must be signed in to leave a comment.
+          </p>
+          <Link to="/sign-in">
+            <Button gradientDuoTone="purpleToBlue">Sign In</Button>
+          </Link>
+        </div>
+      )}
+
+      {loading ? (
+        <div className="flex justify-center">
+          <Spinner size="xl" />
+        </div>
+      ) : error ? (
+        <div className="text-center text-red-500 dark:text-red-400">
+          {error}
+        </div>
+      ) : comments.length === 0 ? (
+        <p className="text-gray-600 dark:text-gray-400 text-center">
+          No comments yet. Be the first to comment!
+        </p>
+      ) : (
+        <div className="space-y-6">
           {comments.map((comment) => (
-            <Comment
-              key={comment._id}
-              comment={comment}
-              onLike={handleLike}
-              onEdit={handleEdit}
-              onDelete={handleDelete}
-            />
+            <Comment key={comment._id} comment={comment} />
           ))}
-        </>
+        </div>
       )}
     </div>
   );

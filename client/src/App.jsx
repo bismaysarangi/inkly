@@ -12,6 +12,7 @@ import Dashboard from "./pages/Dashboard";
 import CreatePost from "./pages/CreatePost";
 import PostPage from "./pages/PostPage";
 import Search from "./pages/Search";
+import UpdatePost from "./pages/UpdatePost";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/create-post" element={<CreatePost />} />
               <Route path="/post/:postSlug" element={<PostPage />} />
+              <Route path="/update-post/:postId" element={<UpdatePost />} />
               <Route path="/search" element={<Search />} />
               <Route
                 path="*"

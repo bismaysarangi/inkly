@@ -1,158 +1,211 @@
-import { useEffect, useState } from "react";
-import { FaThumbsUp } from "react-icons/fa";
+import { useState } from "react";
 import { useSelector } from "react-redux";
+import { FaHeart, FaRegHeart, FaReply, FaEdit, FaTrash } from "react-icons/fa";
 import { Button, Textarea } from "flowbite-react";
 
-export default function Comment({ comment, onLike, onEdit, onDelete }) {
-  const [user, setUser] = useState({});
+export default function Comment({ comment }) {
+  const { currentUser } = useSelector((state) => state.user);
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(comment.content);
-  const { currentUser } = useSelector((state) => state.user);
+  const [isLiked, setIsLiked] = useState(
+    currentUser ? comment.likes.includes(currentUser._id) : false
+  );
+  const [likes, setLikes] = useState(comment.numberOfLikes);
+  const [isReplying, setIsReplying] = useState(false);
+  const [replyContent, setReplyContent] = useState("");
 
-  useEffect(() => {
-    const getUser = async () => {
-      try {
-        const res = await fetch(`/server/user/${comment.userId}`);
-        const data = await res.json();
-        if (res.ok) {
-          setUser(data);
-        }
-      } catch (error) {
-        console.log(error.message);
+  const handleLike = async () => {
+    if (!currentUser) {
+      return;
+    }
+    try {
+      const res = await fetch(`/server/comment/likeComment/${comment._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        console.error(data.message);
+        return;
       }
-    };
-    getUser();
-  }, [comment]);
-
-  const handleEdit = () => {
-    setIsEditing(true);
-    setEditedContent(comment.content);
+      if (res.ok) {
+        setIsLiked(!isLiked);
+        setLikes(isLiked ? likes - 1 : likes + 1);
+      }
+    } catch (error) {
+      console.error(error.message);
+    }
   };
 
-  const handleSave = async () => {
+  const handleEdit = async () => {
     try {
       const res = await fetch(`/server/comment/editComment/${comment._id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          content: editedContent,
-        }),
+        body: JSON.stringify({ content: editedContent }),
+        credentials: "include",
       });
+      const data = await res.json();
+      if (!res.ok) {
+        console.error(data.message);
+        return;
+      }
       if (res.ok) {
         setIsEditing(false);
-        onEdit(comment, editedContent);
       }
     } catch (error) {
-      console.log(error.message);
+      console.error(error.message);
     }
   };
 
   const handleDelete = async () => {
     try {
-      if (!window.confirm("Are you sure you want to delete this comment?")) {
-        return;
-      }
       const res = await fetch(`/server/comment/deleteComment/${comment._id}`, {
         method: "DELETE",
+        credentials: "include",
       });
+      const data = await res.json();
+      if (!res.ok) {
+        console.error(data.message);
+        return;
+      }
       if (res.ok) {
-        onDelete(comment._id);
+        // You might want to handle comment deletion in the parent component
+        console.log("Comment deleted successfully");
       }
     } catch (error) {
-      console.log(error.message);
+      console.error(error.message);
     }
   };
 
+  const handleReplySubmit = async (e) => {
+    e.preventDefault();
+    // Implement reply functionality
+    console.log("Reply submitted:", replyContent);
+    setIsReplying(false);
+    setReplyContent("");
+  };
+
   return (
-    <div className="flex p-4 border-b dark:border-gray-600 text-sm">
-      <div className="flex-shrink-0 mr-3">
+    <div className="border-b border-gray-200 dark:border-gray-700 pb-6 last:border-0">
+      <div className="flex items-start space-x-4 mb-2">
         <img
-          className="w-10 h-10 rounded-full bg-gray-200"
-          src={user.profilePicture}
-          alt={user.username}
+          src={
+            comment.userId.profilePicture ||
+            "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+          }
+          alt={comment.userId.username}
+          className="w-10 h-10 rounded-full object-cover"
         />
-      </div>
-      <div className="flex-1">
-        <div className="flex items-center mb-1">
-          <span className="font-bold mr-1 text-xs truncate">
-            {user ? `@${user.username}` : "anonymous user"}
-          </span>
-          <span className="text-gray-500 text-xs">
-            {new Date(comment.createdAt).toLocaleDateString()}
-          </span>
-        </div>
-        {isEditing ? (
-          <>
-            <Textarea
-              className="mb-2"
-              value={editedContent}
-              onChange={(e) => setEditedContent(e.target.value)}
-            />
-            <div className="flex justify-end gap-2 text-xs">
-              <Button
-                type="button"
-                size="sm"
-                gradientDuoTone="purpleToBlue"
-                onClick={handleSave}
-              >
-                Save
-              </Button>
-              <Button
-                type="button"
-                size="sm"
-                gradientDuoTone="purpleToBlue"
-                outline
-                onClick={() => setIsEditing(false)}
-              >
-                Cancel
-              </Button>
+        <div className="flex-1">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="font-medium text-gray-900 dark:text-white">
+                {comment.userId.username}
+              </p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                {new Date(comment.createdAt).toLocaleString()}
+              </p>
             </div>
-          </>
-        ) : (
-          <>
-            <p className="text-gray-500 pb-2">{comment.content}</p>
-            <div className="flex items-center pt-2 text-xs border-t dark:border-gray-700 max-w-fit gap-2">
+            <div className="flex items-center space-x-2">
               <button
-                type="button"
-                onClick={() => onLike(comment._id)}
-                className={`text-gray-400 hover:text-blue-500 ${
-                  currentUser &&
-                  comment.likes.includes(currentUser._id) &&
-                  "!text-blue-500"
+                onClick={handleLike}
+                className={`flex items-center space-x-1 text-sm ${
+                  isLiked ? "text-red-500" : "text-gray-500 dark:text-gray-400"
                 }`}
               >
-                <FaThumbsUp className="text-xs" />
+                {isLiked ? <FaHeart /> : <FaRegHeart />}
+                <span>{likes}</span>
               </button>
-              <p className="text-gray-400">
-                {comment.numberOfLikes > 0 &&
-                  comment.numberOfLikes +
-                    " " +
-                    (comment.numberOfLikes === 1 ? "like" : "likes")}
-              </p>
-              {currentUser &&
-                (currentUser._id === comment.userId || currentUser.isAdmin) && (
-                  <>
-                    <button
-                      type="button"
-                      onClick={handleEdit}
-                      className="text-gray-400 hover:text-blue-500"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      type="button"
-                      onClick={handleDelete}
-                      className="text-gray-400 hover:text-red-500"
-                    >
-                      Delete
-                    </button>
-                  </>
-                )}
             </div>
-          </>
-        )}
+          </div>
+
+          {isEditing ? (
+            <div className="mt-2">
+              <Textarea
+                value={editedContent}
+                onChange={(e) => setEditedContent(e.target.value)}
+                className="mb-2"
+              />
+              <div className="flex space-x-2">
+                <Button
+                  size="xs"
+                  gradientDuoTone="purpleToBlue"
+                  onClick={handleEdit}
+                >
+                  Save
+                </Button>
+                <Button
+                  size="xs"
+                  gradientDuoTone="pinkToOrange"
+                  outline
+                  onClick={() => setIsEditing(false)}
+                >
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <p className="mt-2 text-gray-700 dark:text-gray-300">
+              {comment.content}
+            </p>
+          )}
+
+          <div className="flex space-x-4 mt-3">
+            <button
+              onClick={() => setIsReplying(!isReplying)}
+              className="text-sm text-purple-600 hover:text-purple-500 dark:text-purple-400 dark:hover:text-purple-300 flex items-center"
+            >
+              <FaReply className="mr-1" /> Reply
+            </button>
+            {currentUser && currentUser._id === comment.userId._id && (
+              <>
+                <button
+                  onClick={() => setIsEditing(!isEditing)}
+                  className="text-sm text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300 flex items-center"
+                >
+                  <FaEdit className="mr-1" /> Edit
+                </button>
+                <button
+                  onClick={handleDelete}
+                  className="text-sm text-red-600 hover:text-red-500 dark:text-red-400 dark:hover:text-red-300 flex items-center"
+                >
+                  <FaTrash className="mr-1" /> Delete
+                </button>
+              </>
+            )}
+          </div>
+
+          {isReplying && (
+            <form onSubmit={handleReplySubmit} className="mt-4">
+              <Textarea
+                placeholder="Write your reply..."
+                rows="2"
+                value={replyContent}
+                onChange={(e) => setReplyContent(e.target.value)}
+                className="mb-2"
+              />
+              <div className="flex space-x-2">
+                <Button size="xs" gradientDuoTone="purpleToBlue" type="submit">
+                  Post Reply
+                </Button>
+                <Button
+                  size="xs"
+                  gradientDuoTone="pinkToOrange"
+                  outline
+                  onClick={() => setIsReplying(false)}
+                >
+                  Cancel
+                </Button>
+              </div>
+            </form>
+          )}
+        </div>
       </div>
     </div>
   );

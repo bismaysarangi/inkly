@@ -22,7 +22,6 @@ export default function CreatePost() {
   const { currentUser } = useSelector((state) => state.user);
   const navigate = useNavigate();
 
-  // Fix text direction issue
   useEffect(() => {
     const fixTextDirection = () => {
       const editor = document.querySelector(".ql-editor");
