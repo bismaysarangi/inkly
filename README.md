@@ -41,10 +41,3 @@ It allows users to create, share, and engage with blog posts in a beautiful, res
 - **Multer** – File upload handling  
 
 ---
-
-## 🚀 Getting Started
-
-### Prerequisites
-- Node.js >= 18  
-- MongoDB instance (local or Atlas)  
-- Cloudinary account for image storage 
