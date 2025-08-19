@@ -70,7 +70,6 @@ export default function Header() {
               </Link>
               <Button
                 className="hidden sm:inline-flex bg-gradient-to-br from-purple-600 to-blue-500 text-white hover:bg-gradient-to-bl focus:ring-blue-300 dark:focus:ring-blue-800"
-                outline
                 onClick={handleSignOut}
               >
                 <FaSignOutAlt className="mr-2" />
@@ -80,10 +79,7 @@ export default function Header() {
           ) : (
             <div className="flex space-x-2">
               <Link to="/sign-in">
-                <Button
-                  className="bg-gradient-to-br from-purple-600 to-blue-500 text-white hover:bg-gradient-to-bl focus:ring-blue-300 dark:focus:ring-blue-800"
-                  outline
-                >
+                <Button className="bg-gradient-to-br from-purple-600 to-blue-500 text-white hover:bg-gradient-to-bl focus:ring-blue-300 dark:focus:ring-blue-800">
                   Sign In
                 </Button>
               </Link>

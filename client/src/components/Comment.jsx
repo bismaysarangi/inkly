@@ -143,7 +143,6 @@ export default function Comment({ comment }) {
                 <Button
                   size="xs"
                   className="bg-gradient-to-br from-pink-500 to-orange-400 text-white hover:bg-gradient-to-bl focus:ring-pink-200 dark:focus:ring-pink-800"
-                  outline
                   onClick={() => setIsEditing(false)}
                 >
                   Cancel
@@ -201,7 +200,6 @@ export default function Comment({ comment }) {
                 <Button
                   size="xs"
                   className="bg-gradient-to-br from-pink-500 to-orange-400 text-white hover:bg-gradient-to-bl focus:ring-pink-200 dark:focus:ring-pink-800"
-                  outline
                   onClick={() => setIsReplying(false)}
                 >
                   Cancel
