@@ -11,8 +11,6 @@ export default function Comment({ comment }) {
     currentUser ? comment.likes.includes(currentUser._id) : false
   );
   const [likes, setLikes] = useState(comment.numberOfLikes);
-  const [isReplying, setIsReplying] = useState(false);
-  const [replyContent, setReplyContent] = useState("");
 
   const handleLike = async () => {
     if (!currentUser) {
@@ -83,14 +81,6 @@ export default function Comment({ comment }) {
     }
   };
 
-  const handleReplySubmit = async (e) => {
-    e.preventDefault();
-    // Implement reply functionality
-    console.log("Reply submitted:", replyContent);
-    setIsReplying(false);
-    setReplyContent("");
-  };
-
   return (
     <div className="border-b border-gray-200 dark:border-gray-700 pb-6 last:border-0">
       <div className="flex items-start space-x-4 mb-2">
@@ -156,12 +146,6 @@ export default function Comment({ comment }) {
           )}
 
           <div className="flex space-x-4 mt-3">
-            <button
-              onClick={() => setIsReplying(!isReplying)}
-              className="text-sm text-purple-600 hover:text-purple-500 dark:text-purple-400 dark:hover:text-purple-300 flex items-center"
-            >
-              <FaReply className="mr-1" /> Reply
-            </button>
             {currentUser && currentUser._id === comment.userId._id && (
               <>
                 <button
@@ -179,34 +163,6 @@ export default function Comment({ comment }) {
               </>
             )}
           </div>
-
-          {isReplying && (
-            <form onSubmit={handleReplySubmit} className="mt-4">
-              <Textarea
-                placeholder="Write your reply..."
-                rows="2"
-                value={replyContent}
-                onChange={(e) => setReplyContent(e.target.value)}
-                className="mb-2"
-              />
-              <div className="flex space-x-2">
-                <Button
-                  size="xs"
-                  className="bg-gradient-to-br from-purple-600 to-blue-500 text-white hover:bg-gradient-to-bl focus:ring-blue-300 dark:focus:ring-blue-800"
-                  type="submit"
-                >
-                  Post Reply
-                </Button>
-                <Button
-                  size="xs"
-                  className="bg-gradient-to-br from-pink-500 to-orange-400 text-white hover:bg-gradient-to-bl focus:ring-pink-200 dark:focus:ring-pink-800"
-                  onClick={() => setIsReplying(false)}
-                >
-                  Cancel
-                </Button>
-              </div>
-            </form>
-          )}
         </div>
       </div>
     </div>

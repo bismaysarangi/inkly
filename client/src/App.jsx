@@ -13,7 +13,7 @@ import CreatePost from "./pages/CreatePost";
 import PostPage from "./pages/PostPage";
 import Search from "./pages/Search";
 import UpdatePost from "./pages/UpdatePost";
-import Profile from "./pages/Pages";
+import Profile from "./pages/ProfilePage";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsofService";
 
