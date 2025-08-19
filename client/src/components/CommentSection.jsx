@@ -61,7 +61,7 @@ export default function CommentSection({ postId }) {
       }
       if (res.ok) {
         setComment("");
-        setComments([data, ...comments]);
+        setComments([data, ...comments]); // This should work now with populated data
         setCommentLoading(false);
         setError(null);
       }
