@@ -14,6 +14,8 @@ import PostPage from "./pages/PostPage";
 import Search from "./pages/Search";
 import UpdatePost from "./pages/UpdatePost";
 import Profile from "./pages/Pages";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsofService";
 
 function App() {
   return (
@@ -32,6 +34,8 @@ function App() {
               <Route path="/post/:postSlug" element={<PostPage />} />
               <Route path="/update-post/:postId" element={<UpdatePost />} />
               <Route path="/search" element={<Search />} />
+              <Route path="/privacy" element={<PrivacyPolicy />} />
+              <Route path="/terms" element={<TermsOfService />} />
               <Route path="/profile" element={<Profile />} />
               <Route
                 path="*"
