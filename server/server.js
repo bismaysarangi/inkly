@@ -6,6 +6,7 @@ import path from "path";
 import multer from "multer";
 import { v2 as cloudinary } from "cloudinary";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
+import cors from "cors";
 
 // Import routes
 import authRoute from "./routes/auth-route.js";
@@ -47,18 +48,25 @@ const __dirname = path.resolve();
 
 const app = express();
 
+app.use(
+  cors({
+    origin: "*",
+    credentials: true,
+  })
+);
+
 // Middleware
 app.use(express.json());
 app.use(cookieParser());
 
 // API routes
-app.use("/server/auth", authRoute);
-app.use("/server/user", userRoute);
-app.use("/server/post", postRoute);
-app.use("/server/comment", commentRoute);
+app.use("/auth", authRoute);
+app.use("/user", userRoute);
+app.use("/post", postRoute);
+app.use("/comment", commentRoute);
 
 // Image upload route
-app.post("/server/upload", upload.single("image"), async (req, res) => {
+app.post("/upload", upload.single("image"), async (req, res) => {
   try {
     res.status(200).json({ imageUrl: req.file.path });
   } catch (error) {
