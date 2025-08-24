@@ -24,10 +24,13 @@ export default function Header() {
 
   const handleSignOut = async () => {
     try {
-      const res = await fetch("/server/auth/signout", {
-        method: "POST",
-        credentials: "include",
-      });
+      const res = await fetch(
+        "https://inkly-server-v564.onrender.com/auth/signout",
+        {
+          method: "POST",
+          credentials: "include",
+        }
+      );
       const data = await res.json();
       if (!res.ok) {
         console.log(data.message);

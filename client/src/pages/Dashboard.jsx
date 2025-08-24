@@ -26,7 +26,7 @@ export default function Dashboard() {
       try {
         setLoading(true);
         const res = await fetch(
-          `/server/post/getposts?userId=${currentUser._id}`,
+          `https://inkly-server-v564.onrender.com/post/getposts?userId=${currentUser._id}`,
           { credentials: "include" }
         );
         const data = await res.json();
@@ -47,7 +47,7 @@ export default function Dashboard() {
 
     try {
       const res = await fetch(
-        `/server/post/deletepost/${postId}/${currentUser._id}`,
+        `https://inkly-server-v564.onrender.com/post/deletepost/${postId}/${currentUser._id}`,
         { method: "DELETE", credentials: "include" }
       );
       const data = await res.json();

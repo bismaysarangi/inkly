@@ -53,7 +53,7 @@ export default function CreatePost() {
       const formData = new FormData();
       formData.append("image", file);
 
-      const res = await fetch("/server/upload", {
+      const res = await fetch("https://inkly-server-v564.onrender.com/upload", {
         method: "POST",
         body: formData,
         credentials: "include",
@@ -88,14 +88,17 @@ export default function CreatePost() {
         userId: currentUser._id,
       };
 
-      const res = await fetch("/server/post/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(postData),
-        credentials: "include",
-      });
+      const res = await fetch(
+        "https://inkly-server-v564.onrender.com/post/create",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(postData),
+          credentials: "include",
+        }
+      );
 
       const data = await res.json();
       if (!res.ok) {

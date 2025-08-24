@@ -16,7 +16,9 @@ export default function Search() {
       try {
         setLoading(true);
         setError(null);
-        const res = await fetch(`/server/post/getposts?searchTerm=${query}`);
+        const res = await fetch(
+          `https://inkly-server-v564.onrender.com/post/getposts?searchTerm=${query}`
+        );
         const data = await res.json();
         if (!res.ok) {
           setError(data.message);
@@ -46,7 +48,7 @@ export default function Search() {
     const startIndex = posts.length;
     try {
       const res = await fetch(
-        `/server/post/getposts?searchTerm=${query}&startIndex=${startIndex}`
+        `https://inkly-server-v564.onrender.com/post/getposts?searchTerm=${query}&startIndex=${startIndex}`
       );
       const data = await res.json();
       if (!res.ok) {

@@ -34,7 +34,7 @@ export default function Profile() {
       const formData = new FormData();
       formData.append("image", file);
 
-      const res = await fetch("/server/upload", {
+      const res = await fetch("https://inkly-server-v564.onrender.com/upload", {
         method: "POST",
         body: formData,
         credentials: "include",
@@ -57,14 +57,17 @@ export default function Profile() {
       setLoading(true);
       setError(null);
 
-      const res = await fetch(`/server/user/update/${currentUser._id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-        credentials: "include",
-      });
+      const res = await fetch(
+        `https://inkly-server-v564.onrender.com/user/update/${currentUser._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+          credentials: "include",
+        }
+      );
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Update failed");

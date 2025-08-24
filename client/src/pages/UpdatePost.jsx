@@ -14,7 +14,6 @@ import { useSelector } from "react-redux";
 
 export default function UpdatePost() {
   const [formData, setFormData] = useState({});
-  const [imageFile, setImageFile] = useState(null);
   const [imageUploading, setImageUploading] = useState(false);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -28,7 +27,9 @@ export default function UpdatePost() {
     const fetchPost = async () => {
       try {
         setLoadingPost(true);
-        const res = await fetch(`/server/post/getposts?postId=${postId}`);
+        const res = await fetch(
+          `https://inkly-server-v564.onrender.com/post/getposts?postId=${postId}`
+        );
         const data = await res.json();
 
         if (!res.ok) {
@@ -58,10 +59,13 @@ export default function UpdatePost() {
       try {
         const formData = new FormData();
         formData.append("image", file);
-        const res = await fetch("/server/upload", {
-          method: "POST",
-          body: formData,
-        });
+        const res = await fetch(
+          "https://inkly-server-v564.onrender.com/upload",
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
         const data = await res.json();
         if (!res.ok) {
           setError(data.message);
@@ -87,7 +91,7 @@ export default function UpdatePost() {
       setLoading(true);
       setError(null);
       const res = await fetch(
-        `/server/post/updatepost/${formData._id}/${currentUser._id}`,
+        `https://inkly-server-v564.onrender.com/post/updatepost/${formData._id}/${currentUser._id}`,
         {
           method: "PUT",
           headers: {

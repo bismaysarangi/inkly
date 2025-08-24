@@ -18,7 +18,9 @@ export default function PostPage() {
     const fetchPost = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`/server/post/getposts?slug=${postSlug}`);
+        const res = await fetch(
+          `https://inkly-server-v564.onrender.com/post/getposts?slug=${postSlug}`
+        );
         const data = await res.json();
         if (!res.ok) {
           setError(data.message);
@@ -47,13 +49,16 @@ export default function PostPage() {
       return;
     }
     try {
-      const res = await fetch(`/server/post/likepost/${post._id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      });
+      const res = await fetch(
+        `https://inkly-server-v564.onrender.com/post/likepost/${post._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        }
+      );
       const data = await res.json();
       if (!res.ok) {
         setError(data.message);

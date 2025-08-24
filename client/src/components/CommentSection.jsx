@@ -15,7 +15,9 @@ export default function CommentSection({ postId }) {
     const fetchComments = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`/server/comment/getPostComments/${postId}`);
+        const res = await fetch(
+          `https://inkly-server-v564.onrender.com/comment/getPostComments/${postId}`
+        );
         const data = await res.json();
         if (!res.ok) {
           setError(data.message);
@@ -42,17 +44,20 @@ export default function CommentSection({ postId }) {
     }
     try {
       setCommentLoading(true);
-      const res = await fetch("/server/comment/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          content: comment,
-          postId,
-          userId: currentUser._id,
-        }),
-      });
+      const res = await fetch(
+        "https://inkly-server-v564.onrender.com/comment/create",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            content: comment,
+            postId,
+            userId: currentUser._id,
+          }),
+        }
+      );
       const data = await res.json();
       if (!res.ok) {
         setError(data.message);

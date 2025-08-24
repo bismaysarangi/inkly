@@ -23,7 +23,9 @@ export default function Home() {
     const fetchPosts = async () => {
       try {
         setLoading(true);
-        const res = await fetch("/server/post/getposts?limit=6");
+        const res = await fetch(
+          "https://inkly-server-v564.onrender.com/post/getposts?limit=6"
+        );
         const data = await res.json();
         if (!res.ok) {
           setError(data.message);

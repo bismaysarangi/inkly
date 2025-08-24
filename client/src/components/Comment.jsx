@@ -14,13 +14,16 @@ export default function Comment({ comment }) {
       return;
     }
     try {
-      const res = await fetch(`/server/comment/likeComment/${comment._id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      });
+      const res = await fetch(
+        `https://inkly-server-v564.onrender.com/comment/likeComment/${comment._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        }
+      );
       const data = await res.json();
       if (!res.ok) {
         console.error(data.message);
