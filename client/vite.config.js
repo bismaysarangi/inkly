@@ -10,7 +10,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/server": {
-        target: "http://localhost:3000",
+        target: "https://inkly-server-v564.onrender.com",
         secure: false,
       },
     },
