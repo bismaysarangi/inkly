@@ -50,7 +50,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: "https://inkly-vjl4.onrender.com/",
+    origin: "https://inkly-vjl4.onrender.com",
     credentials: true,
   })
 );
