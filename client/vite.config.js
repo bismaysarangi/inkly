@@ -11,7 +11,7 @@ export default defineConfig({
     proxy: {
       "/server": {
         target: "https://inkly-server-v564.onrender.com",
-        secure: false,
+        secure: true,
       },
     },
   },
