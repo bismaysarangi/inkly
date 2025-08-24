@@ -63,6 +63,9 @@ export const login = async (req, res, next) => {
       .status(200)
       .cookie("access_token", token, {
         httpOnly: true,
+        secure: true,
+        sameSite: "none",
+        maxAge: 24 * 60 * 60 * 1000,
       })
       .json({
         success: true,
@@ -77,8 +80,15 @@ export const login = async (req, res, next) => {
 
 export const signout = async (req, res, next) => {
   try {
+    const isProduction =
+      process.env.RENDER || process.env.NODE_ENV === "production";
+
     res
-      .clearCookie("access_token")
+      .clearCookie("access_token", {
+        httpOnly: true,
+        secure: isProduction,
+        sameSite: isProduction ? "none" : "lax",
+      })
       .status(200)
       .json({ message: "User has been signed out" });
   } catch (error) {
