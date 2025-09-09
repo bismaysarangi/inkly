@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/server/:path*",
+      "destination": "https://inkly-server-v564.onrender.com/:path*"
+    }
+  ]
+}
