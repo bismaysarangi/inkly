@@ -16,6 +16,7 @@ import UpdatePost from "./pages/UpdatePost";
 import Profile from "./pages/ProfilePage";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsofService";
+import DeletePost from "./pages/DeletePost";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
               <Route path="/create-post" element={<CreatePost />} />
               <Route path="/post/:postSlug" element={<PostPage />} />
               <Route path="/update-post/:postId" element={<UpdatePost />} />
+              <Route path="/delete-post/:postId" element={<DeletePost />} />
               <Route path="/search" element={<Search />} />
               <Route path="/privacy" element={<PrivacyPolicy />} />
               <Route path="/terms" element={<TermsOfService />} />
