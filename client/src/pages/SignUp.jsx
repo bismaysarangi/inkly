@@ -39,8 +39,15 @@ export default function SignUp() {
         dispatch(signInFailure(data.message));
       }
       if (res.ok) {
-        dispatch(signInSuccess(data));
-        navigate("/");
+        dispatch(signInSuccess(null));
+
+        navigate("/sign-in", {
+          state: {
+            email: formData.email,
+            message:
+              "Account created successfully! Please sign in to continue.",
+          },
+        });
       }
     } catch (error) {
       dispatch(signInFailure(error.message));
@@ -140,7 +147,7 @@ export default function SignUp() {
               {loading ? (
                 <>
                   <Spinner size="sm" className="mr-2" />
-                  Signing up...
+                  Creating account...
                 </>
               ) : (
                 "Sign Up"

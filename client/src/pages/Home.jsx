@@ -102,7 +102,7 @@ export default function Home() {
                   <div className="mb-6">
                     <h1 className="text-5xl md:text-6xl font-bold mb-4">
                       Welcome to{" "}
-                      <span className="bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent">
+                      <span className="bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
                         Inkly
                       </span>
                     </h1>
@@ -393,7 +393,7 @@ export default function Home() {
                       </Button>
                       <Button
                         size="lg"
-                        className="border-2 border-purple-600 text-purple-600 bg-transparent hover:bg-purple-600 hover:text-white dark:border-purple-400 dark:text-purple-400 dark:hover:bg-purple-400 dark:hover:text-white font-semibold px-8 py-3"
+                        className="bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700 font-semibold px-8 py-3"
                         as={Link}
                         to="/sign-in"
                       >

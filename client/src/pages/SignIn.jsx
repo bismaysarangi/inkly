@@ -1,7 +1,7 @@
 import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
 import { Link } from "react-router-dom";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   signInStart,
@@ -11,9 +11,21 @@ import {
 
 export default function SignIn() {
   const [formData, setFormData] = useState({});
+  const [successMessage, setSuccessMessage] = useState("");
   const { loading, error: errorMessage } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state?.email) {
+      setFormData({ email: location.state.email });
+      if (location.state.message) {
+        setSuccessMessage(location.state.message);
+        setTimeout(() => setSuccessMessage(""), 5000);
+      }
+    }
+  }, [location.state]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
@@ -75,6 +87,14 @@ export default function SignIn() {
 
         {/* Form */}
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 border border-gray-200 dark:border-gray-700">
+          {successMessage && (
+            <Alert color="success" className="mb-6 border-l-4 border-green-500">
+              <div className="font-medium text-green-800 dark:text-green-200">
+                {successMessage}
+              </div>
+            </Alert>
+          )}
+
           {errorMessage && (
             <Alert color="failure" className="mb-6 border-l-4 border-red-500">
               <div className="font-medium text-red-800 dark:text-red-200">
@@ -98,6 +118,7 @@ export default function SignIn() {
                 autoComplete="email"
                 required
                 placeholder="Enter your email"
+                value={formData.email || ""}
                 onChange={handleChange}
                 disabled={loading}
                 className="w-full"
@@ -118,6 +139,7 @@ export default function SignIn() {
                 autoComplete="current-password"
                 required
                 placeholder="Enter your password"
+                value={formData.password || ""}
                 onChange={handleChange}
                 disabled={loading}
                 className="w-full"
