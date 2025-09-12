@@ -1,20 +1,32 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { useSelector } from "react-redux";
 
-export default function PostCard({ post }) {
+export default function PostCard({ post, onPostClick, isAuthenticated }) {
   const { currentUser } = useSelector((state) => state.user);
+  const navigate = useNavigate();
   const isLiked = currentUser ? post.likes.includes(currentUser._id) : false;
+
+  const handlePostClick = (e) => {
+    e.preventDefault();
+    if (onPostClick) {
+      onPostClick(post.slug);
+    } else if (!isAuthenticated) {
+      navigate("/sign-in");
+    } else {
+      navigate(`/post/${post.slug}`);
+    }
+  };
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow duration-300">
-      <Link to={`/post/${post.slug}`}>
+      <div onClick={handlePostClick} className="cursor-pointer">
         <img
           src={post.image}
           alt={post.title}
           className="w-full h-48 object-cover"
         />
-      </Link>
+      </div>
       <div className="p-6">
         <div className="flex justify-between items-center mb-2">
           <span className="text-sm font-medium px-2.5 py-0.5 rounded bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200">
@@ -31,21 +43,21 @@ export default function PostCard({ post }) {
             </span>
           </div>
         </div>
-        <Link to={`/post/${post.slug}`}>
+        <div onClick={handlePostClick} className="cursor-pointer">
           <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 hover:text-purple-600 dark:hover:text-purple-400">
             {post.title}
           </h3>
-        </Link>
+        </div>
         <p className="text-gray-600 dark:text-gray-400 mb-4 line-clamp-3">
           {post.content.replace(/<[^>]*>/g, "").substring(0, 150)}...
         </p>
         <div className="flex justify-between items-center">
-          <Link
-            to={`/post/${post.slug}`}
+          <button
+            onClick={handlePostClick}
             className="text-purple-600 hover:text-purple-500 dark:text-purple-400 dark:hover:text-purple-300 font-medium"
           >
             Read more
-          </Link>
+          </button>
           <div className="flex items-center">
             <img
               src={
