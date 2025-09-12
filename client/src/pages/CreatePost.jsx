@@ -190,7 +190,7 @@ export default function CreatePost() {
 
           <div>
             <Label value="Post Content" />
-            <div className="quill-wrapper">
+            <div className="quill-wrapper rounded-lg overflow-hidden border border-gray-300 dark:border-gray-600">
               <ReactQuill
                 theme="snow"
                 value={content}
@@ -208,7 +208,15 @@ export default function CreatePost() {
                   direction: "ltr",
                   textAlign: "left",
                 }}
-                className="bg-white dark:bg-gray-700 rounded-lg"
+                className="
+        bg-white dark:bg-gray-700 
+        [&_.ql-toolbar]:border-b-gray-300 [&_.ql-toolbar]:dark:border-b-gray-600
+        [&_.ql-toolbar]:bg-gray-50 [&_.ql-toolbar]:dark:bg-gray-800
+        [&_.ql-editor]:text-gray-900 [&_.ql-editor]:dark:text-gray-100
+        [&_.ql-stroke]:stroke-gray-700 [&_.ql-stroke]:dark:stroke-gray-300
+        [&_.ql-fill]:fill-gray-700 [&_.ql-fill]:dark:fill-gray-300
+        [&_.ql-picker]:text-gray-700 [&_.ql-picker]:dark:text-gray-300
+      "
               />
             </div>
           </div>

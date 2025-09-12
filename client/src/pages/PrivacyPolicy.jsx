@@ -24,7 +24,7 @@ export function PrivacyPolicy() {
             </p>
             <div className="flex items-center justify-center text-sm opacity-75">
               <FaCalendarAlt className="w-4 h-4 mr-2" />
-              Last updated: January 15, 2025
+              Last updated: August 18th, 2025
             </div>
           </div>
         </div>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -20,6 +20,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { currentUser } = useSelector((state) => state.user);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -42,21 +43,8 @@ export default function Dashboard() {
     if (currentUser?._id) fetchPosts();
   }, [currentUser]);
 
-  const handleDelete = async (postId) => {
-    if (!window.confirm("Are you sure you want to delete this post?")) return;
-
-    try {
-      const res = await fetch(
-        `https://inkly-server-v564.onrender.com/post/deletepost/${postId}/${currentUser._id}`,
-        { method: "DELETE", credentials: "include" }
-      );
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Failed to delete post");
-
-      setUserPosts((prev) => prev.filter((post) => post._id !== postId));
-    } catch (err) {
-      setError(err.message);
-    }
+  const handleDeleteRedirect = (postId) => {
+    navigate(`/delete-post/${postId}`);
   };
 
   return (
@@ -123,7 +111,7 @@ export default function Dashboard() {
             <div className="text-center text-red-500">{error}</div>
           ) : userPosts.length === 0 ? (
             <div className="text-center text-gray-500">
-              You haven’t created any posts yet.{" "}
+              You haven't created any posts yet.{" "}
               <Link
                 to="/create-post"
                 className="text-purple-600 hover:underline"
@@ -170,7 +158,7 @@ export default function Dashboard() {
                           <Button
                             size="sm"
                             variant="destructive"
-                            onClick={() => handleDelete(post._id)}
+                            onClick={() => handleDeleteRedirect(post._id)}
                           >
                             <Trash className="mr-1 h-4 w-4" /> Delete
                           </Button>

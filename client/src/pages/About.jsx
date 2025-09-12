@@ -69,7 +69,7 @@ export default function About() {
           Our Story
         </h2>
         <p className="text-gray-600 dark:text-gray-400 mb-4">
-          Inkly was founded in 2023 with a simple goal: to create a space where
+          Inkly was founded in 2025 with a simple goal: to create a space where
           writers and readers could come together to share and discover great
           content. What started as a small project has grown into a vibrant
           community of thousands of users from around the world.
@@ -81,30 +81,6 @@ export default function About() {
           your voice.
         </p>
       </Card>
-
-      <div className="text-center">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-          Join Our Community
-        </h2>
-        <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-2xl mx-auto">
-          Ready to start your journey with Inkly? Sign up today and become part
-          of our growing community.
-        </p>
-        <div className="flex justify-center gap-4">
-          <a
-            href="/sign-up"
-            className="px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-medium rounded-lg hover:opacity-90"
-          >
-            Sign Up
-          </a>
-          <a
-            href="/sign-in"
-            className="px-6 py-3 border border-purple-600 text-purple-600 dark:text-purple-400 font-medium rounded-lg hover:bg-purple-50 dark:hover:bg-gray-700"
-          >
-            Sign In
-          </a>
-        </div>
-      </div>
     </div>
   );
 }
