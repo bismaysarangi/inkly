@@ -186,16 +186,6 @@ export default function AllPosts() {
                 </div>
               </div>
               <div className="text-center">
-                <div className="text-2xl md:text-3xl font-bold text-green-600 dark:text-green-400 mb-1">
-                  {posts
-                    .reduce((total, post) => total + post.views, 0)
-                    .toLocaleString()}
-                </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">
-                  Total Views
-                </div>
-              </div>
-              <div className="text-center">
                 <div className="text-2xl md:text-3xl font-bold text-orange-600 dark:text-orange-400 mb-1">
                   {posts
                     .reduce((total, post) => total + post.likes.length, 0)
