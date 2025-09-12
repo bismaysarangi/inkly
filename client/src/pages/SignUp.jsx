@@ -6,6 +6,7 @@ import {
   signInStart,
   signInSuccess,
   signInFailure,
+  signUpSuccess,
 } from "../redux/user/userSlice";
 
 export default function SignUp() {
@@ -39,7 +40,7 @@ export default function SignUp() {
         dispatch(signInFailure(data.message));
       }
       if (res.ok) {
-        dispatch(signInSuccess(null));
+        dispatch(signUpSuccess());
         navigate("/sign-in", {
           state: {
             email: formData.email,
