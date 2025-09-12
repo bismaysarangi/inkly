@@ -1,17 +1,21 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import { Button, Card, Spinner } from "flowbite-react";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import { Button, Card, Spinner, Modal } from "flowbite-react";
 import { FaHeart, FaRegHeart, FaComment, FaShare } from "react-icons/fa";
+import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { useSelector } from "react-redux";
 import CommentSection from "../components/CommentSection";
 
 export default function PostPage() {
   const { postSlug } = useParams();
+  const navigate = useNavigate();
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [liked, setLiked] = useState(false);
   const [likes, setLikes] = useState(0);
+  const [showModal, setShowModal] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
   const { currentUser } = useSelector((state) => state.user);
 
   useEffect(() => {
@@ -70,6 +74,44 @@ export default function PostPage() {
       }
     } catch (error) {
       setError(error.message);
+    }
+  };
+
+  const handleDeletePost = async () => {
+    if (!currentUser) {
+      return;
+    }
+
+    try {
+      setDeleteLoading(true);
+      const res = await fetch(
+        `https://inkly-server-v564.onrender.com/post/deletepost/${post._id}/${currentUser._id}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        }
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.message);
+        setDeleteLoading(false);
+        return;
+      }
+
+      if (res.ok) {
+        setDeleteLoading(false);
+        setShowModal(false);
+        // Navigate to home or dashboard after successful deletion
+        navigate("/");
+      }
+    } catch (error) {
+      setError(error.message);
+      setDeleteLoading(false);
     }
   };
 
@@ -177,7 +219,10 @@ export default function PostPage() {
                 Edit Post
               </Button>
             </Link>
-            <Button className="bg-gradient-to-br from-pink-600 to-orange-500 text-white hover:bg-gradient-to-bl focus:ring-orange-300 dark:focus:ring-orange-800">
+            <Button
+              className="bg-gradient-to-br from-pink-600 to-orange-500 text-white hover:bg-gradient-to-bl focus:ring-orange-300 dark:focus:ring-orange-800"
+              onClick={() => setShowModal(true)}
+            >
               Delete Post
             </Button>
           </div>
@@ -185,6 +230,46 @@ export default function PostPage() {
       </article>
 
       <CommentSection postId={post._id} />
+
+      <Modal
+        show={showModal}
+        onClose={() => setShowModal(false)}
+        popup
+        size="md"
+      >
+        <Modal.Header />
+        <Modal.Body>
+          <div className="text-center">
+            <HiOutlineExclamationCircle className="h-14 w-14 text-gray-400 dark:text-gray-200 mb-4 mx-auto" />
+            <h3 className="mb-5 text-lg text-gray-500 dark:text-gray-400">
+              Are you sure you want to delete this post?
+            </h3>
+            <div className="flex justify-center gap-4">
+              <Button
+                color="failure"
+                onClick={handleDeletePost}
+                disabled={deleteLoading}
+              >
+                {deleteLoading ? (
+                  <>
+                    <Spinner size="sm" />
+                    <span className="pl-3">Deleting...</span>
+                  </>
+                ) : (
+                  "Yes, I'm sure"
+                )}
+              </Button>
+              <Button
+                color="gray"
+                onClick={() => setShowModal(false)}
+                disabled={deleteLoading}
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
     </div>
   );
 }
