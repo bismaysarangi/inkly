@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Button, Card, Spinner } from "flowbite-react";
 import {
@@ -18,6 +18,14 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { currentUser } = useSelector((state) => state.user);
+  const navigate = useNavigate();
+
+  const handleClick = (e, path) => {
+    if (!currentUser) {
+      e.preventDefault();
+      navigate("/sign-in");
+    }
+  };
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -67,6 +75,7 @@ export default function Home() {
                         className="border-2 border-white text-white bg-transparent hover:bg-white hover:text-purple-600 font-semibold px-8 py-3"
                         as={Link}
                         to="/create-post"
+                        onClick={(e) => handleClick(e, "/create-post")}
                       >
                         <HiOutlinePencil className="mr-2 w-5 h-5" />
                         Write New Post
@@ -76,6 +85,7 @@ export default function Home() {
                         className="border-2 border-white text-white bg-transparent hover:bg-white hover:text-purple-600 font-semibold px-8 py-3"
                         as={Link}
                         to="/dashboard"
+                        onClick={(e) => handleClick(e, "/dashboard")}
                       >
                         View Dashboard
                       </Button>
@@ -108,6 +118,7 @@ export default function Home() {
                         className="border-2 border-white text-white bg-transparent hover:bg-white hover:text-purple-600 font-semibold px-8 py-3"
                         as={Link}
                         to="/about"
+                        onClick={(e) => handleClick(e, "/about")}
                       >
                         Learn More
                       </Button>
@@ -203,6 +214,7 @@ export default function Home() {
               </div>
               <Link
                 to="/search"
+                onClick={(e) => handleClick(e, "/search")}
                 className="mt-4 md:mt-0 inline-flex items-center px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 transition-colors font-medium"
               >
                 Explore All Posts
@@ -275,7 +287,7 @@ export default function Home() {
             </blockquote>
             <div className="flex items-center justify-center">
               <div className="text-left">
-                <div className="font-semibold text-gray-900 dark:text-white">
+                <div className="font-semibold text-gray-90 dark:text-white">
                   Sarah Johnson
                 </div>
                 <div className="text-purple-600 dark:text-purple-400">
