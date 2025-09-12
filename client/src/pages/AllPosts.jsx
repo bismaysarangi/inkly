@@ -96,11 +96,11 @@ export default function AllPosts() {
                 className="inline-flex items-center text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 mr-4"
               >
                 <HiOutlineArrowLeft className="w-5 h-5 mr-1" />
-                Back to Home
+                <span className="hidden sm:inline">Back to Home</span>
               </Link>
               <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white flex items-center">
                 <FaList className="w-8 h-8 mr-3 text-purple-600" />
-                All Posts
+                <span className="hidden sm:inline">All Posts</span>
               </h1>
             </div>
             {currentUser && (
@@ -108,7 +108,7 @@ export default function AllPosts() {
                 as={Link}
                 to="/create-post"
                 onClick={(e) => handleClick(e, "/create-post")}
-                className="bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700"
+                className="sm:text-lg text-xs bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700"
               >
                 <HiOutlinePencil className="mr-2 w-4 h-4" />
                 Write New Post
@@ -169,7 +169,7 @@ export default function AllPosts() {
           {/* Stats */}
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700 mb-8">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              <div className="text-center">
+              <div className="text-center md:col-span-1">
                 <div className="text-2xl md:text-3xl font-bold text-purple-600 dark:text-purple-400 mb-1">
                   {posts.length}
                 </div>
@@ -177,7 +177,7 @@ export default function AllPosts() {
                   Total Posts
                 </div>
               </div>
-              <div className="text-center">
+              <div className="text-center md:col-span-1">
                 <div className="text-2xl md:text-3xl font-bold text-blue-600 dark:text-blue-400 mb-1">
                   {new Set(posts.map((post) => post.userId)).size}
                 </div>
@@ -185,7 +185,17 @@ export default function AllPosts() {
                   Active Writers
                 </div>
               </div>
-              <div className="text-center">
+              <div className="text-center md:col-span-1">
+                <div className="text-2xl md:text-3xl font-bold text-green-600 dark:text-green-400 mb-1">
+                  {posts
+                    .reduce((total, post) => total + post.views, 0)
+                    .toLocaleString()}
+                </div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">
+                  Total Views
+                </div>
+              </div>
+              <div className="text-center md:col-span-1">
                 <div className="text-2xl md:text-3xl font-bold text-orange-600 dark:text-orange-400 mb-1">
                   {posts
                     .reduce((total, post) => total + post.likes.length, 0)
