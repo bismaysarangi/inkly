@@ -114,7 +114,7 @@ export default function Home() {
                     <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                       <Button
                         size="lg"
-                        className="bg-white text-purple-600 hover:bg-gray-100 font-semibold px-8 py-3"
+                        className="border-2 border-white text-white bg-transparent hover:bg-white hover:text-purple-600 font-semibold px-8 py-3"
                         as={Link}
                         to="/sign-up"
                       >
