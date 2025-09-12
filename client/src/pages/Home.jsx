@@ -26,6 +26,13 @@ export default function Home() {
       navigate("/sign-in");
     }
   };
+  const handlePostClick = (postSlug) => {
+    if (!currentUser) {
+      navigate("/sign-in");
+    } else {
+      navigate(`/post/${postSlug}`);
+    }
+  };
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -246,7 +253,12 @@ export default function Home() {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {posts.map((post) => (
-                  <PostCard key={post._id} post={post} />
+                  <PostCard
+                    key={post._id}
+                    post={post}
+                    onPostClick={handlePostClick}
+                    isAuthenticated={!!currentUser}
+                  />
                 ))}
               </div>
             )}
