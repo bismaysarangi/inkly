@@ -220,8 +220,8 @@ export default function Home() {
                 </p>
               </div>
               <Link
-                to="/search"
-                onClick={(e) => handleClick(e, "/search")}
+                to="/all-posts"
+                onClick={(e) => handleClick(e, "/all-posts")}
                 className="mt-4 md:mt-0 inline-flex items-center px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 transition-colors font-medium"
               >
                 Explore All Posts
