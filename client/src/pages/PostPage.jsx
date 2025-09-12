@@ -1,27 +1,17 @@
 import { useEffect, useState } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
-import { Button, Card, Spinner, Modal, Alert } from "flowbite-react";
-import {
-  FaHeart,
-  FaRegHeart,
-  FaComment,
-  FaShare,
-  FaEdit,
-  FaTrash,
-} from "react-icons/fa";
-import { HiOutlineExclamationCircle } from "react-icons/hi";
+import { Link, useParams } from "react-router-dom";
+import { Button, Card, Spinner } from "flowbite-react";
+import { FaHeart, FaRegHeart, FaComment, FaShare } from "react-icons/fa";
 import { useSelector } from "react-redux";
+import CommentSection from "../components/CommentSection";
 
 export default function PostPage() {
   const { postSlug } = useParams();
-  const navigate = useNavigate();
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [liked, setLiked] = useState(false);
   const [likes, setLikes] = useState(0);
-  const [showModal, setShowModal] = useState(false);
-  const [deleteLoading, setDeleteLoading] = useState(false);
   const { currentUser } = useSelector((state) => state.user);
 
   useEffect(() => {
@@ -55,7 +45,7 @@ export default function PostPage() {
   }, [postSlug, currentUser]);
 
   const handleLike = async () => {
-    if (!currentUser || !post) {
+    if (!currentUser) {
       return;
     }
     try {
@@ -83,48 +73,10 @@ export default function PostPage() {
     }
   };
 
-  const handleDeletePost = async () => {
-    if (!currentUser || !post) {
-      return;
-    }
-
-    try {
-      setDeleteLoading(true);
-      const res = await fetch(
-        `https://inkly-server-v564.onrender.com/post/deletepost/${post._id}/${currentUser._id}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        }
-      );
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.message);
-        setDeleteLoading(false);
-        return;
-      }
-
-      if (res.ok) {
-        setDeleteLoading(false);
-        setShowModal(false);
-        navigate("/");
-      }
-    } catch (error) {
-      setError(error.message);
-      setDeleteLoading(false);
-    }
-  };
-
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Spinner size="xl" />
-        <span className="pl-3">Loading post...</span>
       </div>
     );
   }
@@ -134,7 +86,7 @@ export default function PostPage() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-            Error Loading Post
+            Error
           </h1>
           <p className="text-gray-600 dark:text-gray-400">{error}</p>
           <Link
@@ -149,8 +101,8 @@ export default function PostPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4 mx-auto max-w-4xl">
-      <article className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6">
+    <div className="min-h-screen py-12 px-4 mx-auto max-w-4xl">
+      <article>
         <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
           {post.title}
         </h1>
@@ -197,95 +149,44 @@ export default function PostPage() {
           dangerouslySetInnerHTML={{ __html: post.content }}
         />
 
-        <div className="flex items-center space-x-6 mb-6">
+        <div className="flex items-center space-x-6 mb-12">
           <button
             onClick={handleLike}
             className={`flex items-center space-x-1 ${
               liked ? "text-red-500" : "text-gray-500 dark:text-gray-400"
-            } hover:text-red-500 transition-colors duration-200`}
+            }`}
             disabled={!currentUser}
           >
-            {liked ? <FaHeart className="text-red-500" /> : <FaRegHeart />}
+            {liked ? <FaHeart /> : <FaRegHeart />}
             <span>{likes} Likes</span>
           </button>
           <div className="flex items-center space-x-1 text-gray-500 dark:text-gray-400">
             <FaComment />
             <span>Comments</span>
           </div>
-          <button className="flex items-center space-x-1 text-gray-500 dark:text-gray-400 hover:text-blue-500 transition-colors duration-200">
+          <button className="flex items-center space-x-1 text-gray-500 dark:text-gray-400">
             <FaShare />
             <span>Share</span>
           </button>
         </div>
 
-        {error && (
-          <Alert color="failure" className="mb-6">
-            {error}
-          </Alert>
-        )}
-
         {currentUser && currentUser._id === post.userId._id && (
           <div className="flex space-x-4 mb-8">
             <Link to={`/update-post/${post._id}`}>
-              <Button gradientMonochrome="purple" className="flex items-center">
-                <FaEdit className="mr-2" />
+              <Button className="bg-gradient-to-br from-purple-600 to-blue-500 text-white hover:bg-gradient-to-bl focus:ring-blue-300 dark:focus:ring-blue-800">
                 Edit Post
               </Button>
             </Link>
-            <Button
-              gradientMonochrome="failure"
-              className="flex items-center"
-              onClick={() => setShowModal(true)}
-            >
-              <FaTrash className="mr-2" />
-              Delete Post
-            </Button>
+            <Link to={`/delete-post/${post._id}`}>
+              <Button color="bg-gradient-to-br from-purple-600 to-blue-500 text-white hover:bg-gradient-to-bl focus:ring-blue-300 dark:focus:ring-blue-800">
+                Delete Post
+              </Button>
+            </Link>
           </div>
         )}
       </article>
 
-      <Modal
-        show={showModal}
-        onClose={() => setShowModal(false)}
-        popup
-        size="md"
-      >
-        <Modal.Header />
-        <Modal.Body>
-          <div className="text-center">
-            <HiOutlineExclamationCircle className="h-14 w-14 text-gray-400 dark:text-gray-200 mb-4 mx-auto" />
-            <h3 className="mb-5 text-lg text-gray-500 dark:text-gray-400">
-              Are you sure you want to delete this post?
-            </h3>
-            <p className="text-sm text-gray-400 mb-4">
-              This action cannot be undone.
-            </p>
-            <div className="flex justify-center gap-4">
-              <Button
-                color="failure"
-                onClick={handleDeletePost}
-                disabled={deleteLoading}
-              >
-                {deleteLoading ? (
-                  <>
-                    <Spinner size="sm" />
-                    <span className="pl-3">Deleting...</span>
-                  </>
-                ) : (
-                  "Yes, delete it"
-                )}
-              </Button>
-              <Button
-                color="gray"
-                onClick={() => setShowModal(false)}
-                disabled={deleteLoading}
-              >
-                Cancel
-              </Button>
-            </div>
-          </div>
-        </Modal.Body>
-      </Modal>
+      <CommentSection postId={post._id} />
     </div>
   );
 }
