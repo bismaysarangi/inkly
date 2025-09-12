@@ -59,19 +59,20 @@ export const login = async (req, res, next) => {
 
     const { password: pass, ...rest } = validUser._doc;
 
-    res
-      .status(200)
-      .cookie("access_token", token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
-        maxAge: 24 * 60 * 60 * 1000,
-      })
-      .json({
-        success: true,
-        message: "Login successful",
-        user: rest,
-      });
+    const cookieOptions = [
+      `access_token=${token}`,
+      "HttpOnly",
+      "Secure",
+      "SameSite=None",
+      `Max-Age=${24 * 60 * 60}`,
+      "Path=/",
+    ].join("; ");
+
+    res.status(200).setHeader("Set-Cookie", cookieOptions).json({
+      success: true,
+      message: "Login successful",
+      user: rest,
+    });
   } catch (error) {
     console.error("Login error:", error);
     next(error);
