@@ -1,10 +1,16 @@
 import { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { Button, Card, Spinner, Modal } from "flowbite-react";
-import { FaHeart, FaRegHeart, FaComment, FaShare } from "react-icons/fa";
+import { Button, Card, Spinner, Modal, Alert } from "flowbite-react";
+import {
+  FaHeart,
+  FaRegHeart,
+  FaComment,
+  FaShare,
+  FaEdit,
+  FaTrash,
+} from "react-icons/fa";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { useSelector } from "react-redux";
-import CommentSection from "../components/CommentSection";
 
 export default function PostPage() {
   const { postSlug } = useParams();
@@ -49,7 +55,7 @@ export default function PostPage() {
   }, [postSlug, currentUser]);
 
   const handleLike = async () => {
-    if (!currentUser) {
+    if (!currentUser || !post) {
       return;
     }
     try {
@@ -78,7 +84,7 @@ export default function PostPage() {
   };
 
   const handleDeletePost = async () => {
-    if (!currentUser) {
+    if (!currentUser || !post) {
       return;
     }
 
@@ -106,7 +112,6 @@ export default function PostPage() {
       if (res.ok) {
         setDeleteLoading(false);
         setShowModal(false);
-        // Navigate to home or dashboard after successful deletion
         navigate("/");
       }
     } catch (error) {
@@ -119,6 +124,7 @@ export default function PostPage() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Spinner size="xl" />
+        <span className="pl-3">Loading post...</span>
       </div>
     );
   }
@@ -128,7 +134,7 @@ export default function PostPage() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-            Error
+            Error Loading Post
           </h1>
           <p className="text-gray-600 dark:text-gray-400">{error}</p>
           <Link
@@ -143,8 +149,8 @@ export default function PostPage() {
   }
 
   return (
-    <div className="min-h-screen py-12 px-4 mx-auto max-w-4xl">
-      <article>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4 mx-auto max-w-4xl">
+      <article className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6">
         <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
           {post.title}
         </h1>
@@ -191,45 +197,52 @@ export default function PostPage() {
           dangerouslySetInnerHTML={{ __html: post.content }}
         />
 
-        <div className="flex items-center space-x-6 mb-12">
+        <div className="flex items-center space-x-6 mb-6">
           <button
             onClick={handleLike}
             className={`flex items-center space-x-1 ${
               liked ? "text-red-500" : "text-gray-500 dark:text-gray-400"
-            }`}
+            } hover:text-red-500 transition-colors duration-200`}
             disabled={!currentUser}
           >
-            {liked ? <FaHeart /> : <FaRegHeart />}
+            {liked ? <FaHeart className="text-red-500" /> : <FaRegHeart />}
             <span>{likes} Likes</span>
           </button>
           <div className="flex items-center space-x-1 text-gray-500 dark:text-gray-400">
             <FaComment />
             <span>Comments</span>
           </div>
-          <button className="flex items-center space-x-1 text-gray-500 dark:text-gray-400">
+          <button className="flex items-center space-x-1 text-gray-500 dark:text-gray-400 hover:text-blue-500 transition-colors duration-200">
             <FaShare />
             <span>Share</span>
           </button>
         </div>
 
+        {error && (
+          <Alert color="failure" className="mb-6">
+            {error}
+          </Alert>
+        )}
+
         {currentUser && currentUser._id === post.userId._id && (
           <div className="flex space-x-4 mb-8">
             <Link to={`/update-post/${post._id}`}>
-              <Button className="bg-gradient-to-br from-purple-600 to-blue-500 text-white hover:bg-gradient-to-bl focus:ring-blue-300 dark:focus:ring-blue-800">
+              <Button gradientMonochrome="purple" className="flex items-center">
+                <FaEdit className="mr-2" />
                 Edit Post
               </Button>
             </Link>
             <Button
-              className="bg-gradient-to-br from-pink-600 to-orange-500 text-white hover:bg-gradient-to-bl focus:ring-orange-300 dark:focus:ring-orange-800"
+              gradientMonochrome="failure"
+              className="flex items-center"
               onClick={() => setShowModal(true)}
             >
+              <FaTrash className="mr-2" />
               Delete Post
             </Button>
           </div>
         )}
       </article>
-
-      <CommentSection postId={post?._id} />
 
       <Modal
         show={showModal}
@@ -244,6 +257,9 @@ export default function PostPage() {
             <h3 className="mb-5 text-lg text-gray-500 dark:text-gray-400">
               Are you sure you want to delete this post?
             </h3>
+            <p className="text-sm text-gray-400 mb-4">
+              This action cannot be undone.
+            </p>
             <div className="flex justify-center gap-4">
               <Button
                 color="failure"
@@ -256,7 +272,7 @@ export default function PostPage() {
                     <span className="pl-3">Deleting...</span>
                   </>
                 ) : (
-                  "Yes, I'm sure"
+                  "Yes, delete it"
                 )}
               </Button>
               <Button
