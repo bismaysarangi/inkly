@@ -168,8 +168,8 @@ export default function AllPosts() {
         <div className="max-w-6xl mx-auto">
           {/* Stats */}
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700 mb-8">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              <div className="text-center md:col-span-1">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="text-center">
                 <div className="text-2xl md:text-3xl font-bold text-purple-600 dark:text-purple-400 mb-1">
                   {posts.length}
                 </div>
@@ -177,7 +177,7 @@ export default function AllPosts() {
                   Total Posts
                 </div>
               </div>
-              <div className="text-center md:col-span-1">
+              <div className="text-center">
                 <div className="text-2xl md:text-3xl font-bold text-blue-600 dark:text-blue-400 mb-1">
                   {new Set(posts.map((post) => post.userId)).size}
                 </div>
@@ -185,17 +185,7 @@ export default function AllPosts() {
                   Active Writers
                 </div>
               </div>
-              <div className="text-center md:col-span-1">
-                <div className="text-2xl md:text-3xl font-bold text-green-600 dark:text-green-400 mb-1">
-                  {posts
-                    .reduce((total, post) => total + post.views, 0)
-                    .toLocaleString()}
-                </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">
-                  Total Views
-                </div>
-              </div>
-              <div className="text-center md:col-span-1">
+              <div className="text-center">
                 <div className="text-2xl md:text-3xl font-bold text-orange-600 dark:text-orange-400 mb-1">
                   {posts
                     .reduce((total, post) => total + post.likes.length, 0)
