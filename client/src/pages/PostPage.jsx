@@ -229,7 +229,7 @@ export default function PostPage() {
         )}
       </article>
 
-      <CommentSection postId={post._id} />
+      <CommentSection postId={post?._id} />
 
       <Modal
         show={showModal}
