@@ -102,7 +102,7 @@ export default function Home() {
                   <div className="mb-6">
                     <h1 className="text-5xl md:text-6xl font-bold mb-4">
                       Welcome to{" "}
-                      <span className="bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
+                      <span className="bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent">
                         Inkly
                       </span>
                     </h1>
