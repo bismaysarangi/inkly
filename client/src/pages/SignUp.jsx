@@ -40,7 +40,6 @@ export default function SignUp() {
       }
       if (res.ok) {
         dispatch(signInSuccess(null));
-
         navigate("/sign-in", {
           state: {
             email: formData.email,
