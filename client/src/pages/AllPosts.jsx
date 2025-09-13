@@ -98,8 +98,8 @@ export default function AllPosts() {
                 <HiOutlineArrowLeft className="w-5 h-5 mr-1" />
                 <span className="hidden sm:inline">Back to Home</span>
               </Link>
-              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white flex items-center">
-                <FaList className="w-8 h-8 mr-3 text-purple-600" />
+              <h1 className="text-md md:text-4xl font-bold text-gray-900 dark:text-white flex items-center">
+                <FaList className="w-5 h-5 mr-3 text-purple-600" />
                 <span className="hidden sm:inline">All Posts</span>
               </h1>
             </div>
