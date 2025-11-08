@@ -85,22 +85,21 @@ export default function AllPosts() {
     });
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-950 dark:to-gray-900 py-8">
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="max-w-6xl mx-auto mb-8">
           <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center">
+            <div className="flex items-center gap-3">
               <Link
                 to="/"
-                className="inline-flex items-center text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 mr-4"
+                className="inline-flex items-center text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 transition-colors"
               >
-                <HiOutlineArrowLeft className="w-5 h-5 mr-1" />
-                <span className="hidden sm:inline">Back to Home</span>
+                <HiOutlineArrowLeft className="w-5 h-5" />
               </Link>
-              <h1 className="text-md md:text-4xl font-bold text-gray-900 dark:text-white flex items-center">
-                <FaList className="w-5 h-5 mr-3 text-purple-600" />
-                <span className="hidden sm:inline">All Posts</span>
+              <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                <FaList className="w-5 h-5 text-purple-600" />
+                <span className="hidden sm:inline">Posts</span>
               </h1>
             </div>
             {currentUser && (
@@ -108,44 +107,44 @@ export default function AllPosts() {
                 as={Link}
                 to="/create-post"
                 onClick={(e) => handleClick(e, "/create-post")}
-                className="sm:text-lg text-xs bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700"
+                className="text-sm md:text-base bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700 transition-all shadow-lg hover:shadow-xl"
               >
                 <HiOutlinePencil className="mr-2 w-4 h-4" />
-                Write New Post
+                <span className="hidden sm:inline">Write</span>
               </Button>
             )}
           </div>
 
-          <p className="text-gray-600 dark:text-gray-400 text-lg mb-6">
-            Discover all the amazing stories from our community of writers
+          <p className="text-gray-600 dark:text-gray-400 text-sm md:text-base mb-6">
+            Explore stories from our community
           </p>
 
           {/* Search and Filter */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-md border border-gray-200 dark:border-gray-700 backdrop-blur-sm">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label
                   htmlFor="search"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                  className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2 uppercase tracking-wide"
                 >
-                  Search Posts
+                  Search
                 </label>
                 <div className="relative">
                   <HiOutlineSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                   <input
                     type="text"
                     id="search"
-                    placeholder="Search by title, content, or category..."
+                    placeholder="Title, content, category..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:text-white"
+                    className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-all text-sm"
                   />
                 </div>
               </div>
               <div>
                 <label
                   htmlFor="sort"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                  className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2 uppercase tracking-wide"
                 >
                   Sort By
                 </label>
@@ -153,9 +152,9 @@ export default function AllPosts() {
                   id="sort"
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:text-white"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-all text-sm"
                 >
-                  <option value="createdAt">Newest First</option>
+                  <option value="createdAt">Newest</option>
                   <option value="views">Most Views</option>
                   <option value="likes">Most Likes</option>
                 </select>
@@ -167,32 +166,32 @@ export default function AllPosts() {
         {/* Posts Grid */}
         <div className="max-w-6xl mx-auto">
           {/* Stats */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700 mb-8">
+          <div className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-gray-800 dark:to-gray-800 rounded-xl p-6 shadow-md border border-gray-200 dark:border-gray-700 mb-8">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="text-center">
-                <div className="text-2xl md:text-3xl font-bold text-purple-600 dark:text-purple-400 mb-1">
+                <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-1">
                   {posts.length}
                 </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">
+                <div className="text-xs md:text-sm text-gray-600 dark:text-gray-400 font-medium">
                   Total Posts
                 </div>
               </div>
               <div className="text-center">
-                <div className="text-2xl md:text-3xl font-bold text-blue-600 dark:text-blue-400 mb-1">
+                <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent mb-1">
                   {new Set(posts.map((post) => post.userId)).size}
                 </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">
-                  Active Writers
+                <div className="text-xs md:text-sm text-gray-600 dark:text-gray-400 font-medium">
+                  Writers
                 </div>
               </div>
               <div className="text-center">
-                <div className="text-2xl md:text-3xl font-bold text-orange-600 dark:text-orange-400 mb-1">
+                <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent mb-1">
                   {posts
                     .reduce((total, post) => total + post.likes.length, 0)
                     .toLocaleString()}
                 </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">
-                  Total Likes
+                <div className="text-xs md:text-sm text-gray-600 dark:text-gray-400 font-medium">
+                  Likes
                 </div>
               </div>
             </div>
@@ -202,18 +201,20 @@ export default function AllPosts() {
             <div className="flex justify-center py-16">
               <div className="text-center">
                 <Spinner size="xl" className="mb-4" />
-                <p className="text-gray-600 dark:text-gray-400">
-                  Loading all posts...
+                <p className="text-gray-600 dark:text-gray-400 text-sm">
+                  Loading posts...
                 </p>
               </div>
             </div>
           ) : error ? (
             <div className="text-center py-16">
               <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-8 max-w-md mx-auto">
-                <p className="text-red-600 dark:text-red-400 mb-4">{error}</p>
+                <p className="text-red-600 dark:text-red-400 mb-4 text-sm">
+                  {error}
+                </p>
                 <Button
                   onClick={() => window.location.reload()}
-                  className="bg-red-600 text-white hover:bg-red-700"
+                  className="bg-red-600 text-white hover:bg-red-700 text-sm"
                 >
                   Try Again
                 </Button>
@@ -221,18 +222,17 @@ export default function AllPosts() {
             </div>
           ) : (
             <>
-              <div className="mb-4 flex items-center justify-between">
-                <p className="text-gray-600 dark:text-gray-400">
-                  Showing {filteredAndSortedPosts.length} of {posts.length}{" "}
-                  posts
+              <div className="mb-6 flex items-center justify-between">
+                <p className="text-gray-600 dark:text-gray-400 text-sm">
+                  {filteredAndSortedPosts.length} of {posts.length} posts
                 </p>
                 {searchTerm && (
                   <Button
                     color="gray"
                     onClick={() => setSearchTerm("")}
-                    className="text-sm"
+                    className="text-xs h-9"
                   >
-                    Clear Search
+                    Clear
                   </Button>
                 )}
               </div>
@@ -252,34 +252,34 @@ export default function AllPosts() {
 
           {filteredAndSortedPosts.length === 0 && !loading && !error && (
             <div className="text-center py-16">
-              <HiOutlineSearch className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+              <HiOutlineSearch className="w-16 h-16 mx-auto text-gray-300 dark:text-gray-600 mb-4" />
+              <h3 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white mb-2">
                 No posts found
               </h3>
-              <p className="text-gray-600 dark:text-gray-400 mb-6">
-                {searchTerm
-                  ? `No posts matching "${searchTerm}"`
-                  : "No posts available yet"}
+              <p className="text-gray-600 dark:text-gray-400 text-sm mb-6">
+                {searchTerm ? `No results for "${searchTerm}"` : "No posts yet"}
               </p>
-              {searchTerm && (
-                <Button
-                  color="gray"
-                  onClick={() => setSearchTerm("")}
-                  className="mr-4"
-                >
-                  Clear Search
-                </Button>
-              )}
-              {currentUser && (
-                <Button
-                  as={Link}
-                  to="/create-post"
-                  className="bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700"
-                >
-                  <HiOutlinePencil className="mr-2 w-4 h-4" />
-                  Write First Post
-                </Button>
-              )}
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                {searchTerm && (
+                  <Button
+                    color="gray"
+                    onClick={() => setSearchTerm("")}
+                    className="text-sm"
+                  >
+                    Clear Search
+                  </Button>
+                )}
+                {currentUser && (
+                  <Button
+                    as={Link}
+                    to="/create-post"
+                    className="bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700 text-sm"
+                  >
+                    <HiOutlinePencil className="mr-2 w-4 h-4" />
+                    Write First Post
+                  </Button>
+                )}
+              </div>
             </div>
           )}
         </div>
