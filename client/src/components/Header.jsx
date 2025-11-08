@@ -118,7 +118,7 @@ export default function Header() {
               <div className="flex items-center space-x-3">
                 {/* Dashboard Button */}
                 <Link to="/dashboard">
-                  <button className="hidden sm:inline-flex items-center px-4 py-2 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium shadow-md hover:shadow-lg hover:from-indigo-600 hover:to-purple-700 transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200">
+                  <button className="hidden sm:inline-flex items-center px-4 py-2 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-700 text-white font-medium shadow-md hover:shadow-lg hover:from-indigo-500 hover:to-purple-600 transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 cursor-pointer">
                     <FaTachometerAlt className="mr-2" />
                     Dashboard
                   </button>
@@ -126,7 +126,7 @@ export default function Header() {
 
                 {/* Create Post Button */}
                 <Link to="/create-post">
-                  <button className="inline-flex items-center px-4 py-2 rounded-lg bg-gradient-to-r from-green-500 to-emerald-600 text-white font-medium shadow-md hover:shadow-lg hover:from-green-600 hover:to-emerald-700 transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200">
+                  <button className="inline-flex items-center px-4 py-2 rounded-lg bg-gradient-to-r from-green-600 to-emerald-700 text-white font-medium shadow-md hover:shadow-lg hover:from-green-500 hover:to-emerald-600 transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 cursor-pointer">
                     <FaPlus className="mr-2" />
                     <span className="hidden sm:inline">Create Post</span>
                     <span className="sm:hidden">Create</span>
@@ -148,7 +148,7 @@ export default function Header() {
                 {/* Sign Out Button - Desktop */}
                 <button
                   onClick={handleSignOut}
-                  className="hidden lg:inline-flex items-center px-4 py-2 rounded-lg bg-gradient-to-r from-red-500 to-pink-600 text-white font-medium shadow-md hover:shadow-lg hover:from-red-600 hover:to-pink-700 transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200"
+                  className="hidden lg:inline-flex items-center px-4 py-2 rounded-lg bg-gradient-to-r from-red-600 to-pink-700 text-white font-medium shadow-md hover:shadow-lg hover:from-red-500 hover:to-pink-600 transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 cursor-pointer"
                 >
                   <FaSignOutAlt className="mr-2" />
                   Sign Out
@@ -157,7 +157,7 @@ export default function Header() {
                 {/* Mobile Sign Out (icon only) */}
                 <button
                   onClick={handleSignOut}
-                  className="lg:hidden p-2.5 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-200 active:scale-95 hover:scale-110"
+                  className="lg:hidden p-2.5 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-200 active:scale-95 hover:scale-110 cursor-pointer"
                   aria-label="Sign out"
                 >
                   <FaSignOutAlt className="text-red-500 text-lg" />
@@ -166,12 +166,12 @@ export default function Header() {
             ) : (
               <div className="flex space-x-2">
                 <Link to="/sign-in">
-                  <button className="px-5 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 text-white font-medium shadow-md hover:shadow-lg hover:from-purple-700 hover:to-blue-700 transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200">
+                  <button className="px-5 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 text-white font-medium shadow-md hover:shadow-lg hover:from-purple-700 hover:to-blue-700 transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 cursor-pointer">
                     Sign In
                   </button>
                 </Link>
                 <Link to="/sign-up">
-                  <button className="px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-medium shadow-md hover:shadow-lg hover:from-blue-700 hover:to-cyan-700 transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200">
+                  <button className="px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-medium shadow-md hover:shadow-lg hover:from-blue-700 hover:to-cyan-700 transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 cursor-pointer">
                     Sign Up
                   </button>
                 </Link>
