@@ -116,6 +116,18 @@ export default function Header() {
 
             {currentUser ? (
               <div className="flex items-center space-x-3">
+                {/* Profile Picture */}
+                <Link to="/profile">
+                  <img
+                    src={
+                      currentUser.profilePicture ||
+                      "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+                    }
+                    alt="profile"
+                    className="h-9 w-9 rounded-full object-cover border-2 border-gray-200 dark:border-gray-600 hover:border-purple-500 dark:hover:border-purple-400 hover:shadow-lg transform hover:scale-110 transition-all duration-200 cursor-pointer"
+                  />
+                </Link>
+
                 {/* Dashboard Button */}
                 <Link to="/dashboard">
                   <button className="hidden sm:inline-flex items-center px-4 py-2 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-700 text-white font-medium shadow-md hover:shadow-lg hover:from-indigo-500 hover:to-purple-600 transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 cursor-pointer">
@@ -131,18 +143,6 @@ export default function Header() {
                     <span className="hidden sm:inline">Create Post</span>
                     <span className="sm:hidden">Create</span>
                   </button>
-                </Link>
-
-                {/* Profile Picture */}
-                <Link to="/profile">
-                  <img
-                    src={
-                      currentUser.profilePicture ||
-                      "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
-                    }
-                    alt="profile"
-                    className="h-9 w-9 rounded-full object-cover border-2 border-gray-200 dark:border-gray-600 hover:border-purple-500 dark:hover:border-purple-400 hover:shadow-lg transform hover:scale-110 transition-all duration-200 cursor-pointer"
-                  />
                 </Link>
 
                 {/* Sign Out Button - Desktop */}
