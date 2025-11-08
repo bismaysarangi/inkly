@@ -10,8 +10,6 @@ import {
   HiOutlineSparkles,
   HiOutlineSearch,
 } from "react-icons/hi";
-import { FaFire, FaList } from "react-icons/fa";
-import { MdTrendingUp } from "react-icons/md";
 import PostCard from "../components/PostCard";
 
 export default function AllPosts() {
@@ -98,7 +96,6 @@ export default function AllPosts() {
                 <HiOutlineArrowLeft className="w-5 h-5" />
               </Link>
               <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                <FaList className="w-5 h-5 text-purple-600" />
                 <span className="hidden sm:inline">Posts</span>
               </h1>
             </div>
