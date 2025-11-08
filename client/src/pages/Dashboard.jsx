@@ -53,7 +53,7 @@ export default function Dashboard() {
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Dashboard</h1>
         <Link to="/create-post">
-          <Button className="bg-gradient-to-r from-purple-600 to-blue-500 text-white">
+          <Button className="bg-gradient-to-r from-purple-600 to-blue-500 text-white cursor-pointer hover:from-purple-700 hover:to-blue-600">
             Create Post
           </Button>
         </Link>
@@ -151,13 +151,18 @@ export default function Dashboard() {
                       <TableCell>
                         <div className="flex space-x-2">
                           <Link to={`/update-post/${post._id}`}>
-                            <Button size="sm" variant="outline">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="cursor-pointer"
+                            >
                               <Pencil className="mr-1 h-4 w-4" /> Edit
                             </Button>
                           </Link>
                           <Button
                             size="sm"
                             variant="outline"
+                            className="cursor-pointer"
                             onClick={() => handleDeleteRedirect(post._id)}
                           >
                             <Trash className="mr-1 h-4 w-4" /> Delete
