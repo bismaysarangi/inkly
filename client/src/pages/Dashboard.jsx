@@ -157,7 +157,7 @@ export default function Dashboard() {
                           </Link>
                           <Button
                             size="sm"
-                            variant="destructive"
+                            variant="outline"
                             onClick={() => handleDeleteRedirect(post._id)}
                           >
                             <Trash className="mr-1 h-4 w-4" /> Delete
