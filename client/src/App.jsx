@@ -1,4 +1,5 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
+import { useEffect } from "react";
 import { Provider } from "react-redux";
 import { store } from "./redux/store";
 import ThemeProvider from "./components/ThemeProvider";
@@ -20,6 +21,13 @@ import DeletePost from "./pages/DeletePost";
 import AllPosts from "./pages/AllPosts";
 
 function App() {
+  const location = useLocation();
+
+  useEffect(() => {
+    console.log("Scrolling to top");
+    window.scrollTo(0, 0);
+  }, [location]);
+
   return (
     <Provider store={store}>
       <ThemeProvider>
