@@ -177,14 +177,6 @@ export default function AllPosts() {
                 </div>
               </div>
               <div className="text-center">
-                <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent mb-1">
-                  {new Set(posts.map((post) => post.userId)).size}
-                </div>
-                <div className="text-xs md:text-sm text-gray-600 dark:text-gray-400 font-medium">
-                  Writers
-                </div>
-              </div>
-              <div className="text-center">
                 <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent mb-1">
                   {posts
                     .reduce((total, post) => total + post.likes.length, 0)
